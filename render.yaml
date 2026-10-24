@@ -1,37 +1,14 @@
-# ElderEase — Render service configuration.
-# This file is safe to commit to a PUBLIC GitHub repository.
-# Never add Google secrets, developer passwords, or user records here.
-#
-# Existing Render web service shown in the dashboard: WEB-app-
-# Existing URL: https://web-app-kkrx.onrender.com
-#
-# IMPORTANT: On an already-created Render service, entering or editing
-# render.yaml alone does not automatically apply these environment variables.
-# Set GOOGLE_CLIENT_ID and DEV_PASSWORD in Render Dashboard > Environment.
-
 services:
   - type: web
     name: WEB-app-
     runtime: node
     plan: free
-    branch: main
     buildCommand: npm install
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
-
-      # From Google Cloud Console: OAuth 2.0 Client ID for a Web application.
-      # Public client ID, but supply it privately in Render Dashboard for now.
       - key: GOOGLE_CLIENT_ID
         sync: false
-
-      # Use a new unique developer-console password, >= 12 characters.
-      # Never commit its actual value to GitHub.
       - key: DEV_PASSWORD
         sync: false
-
-      # The matching server.js already permits the GitHub Pages origin
-      # https://vaidyayuvraj90-oss.github.io and this Render service URL.
-      # For ADDITIONAL frontend domains, set ALLOWED_ORIGINS directly in
-      # Render Dashboard to a comma-separated list of HTTPS origins.
