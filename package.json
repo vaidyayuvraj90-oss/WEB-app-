@@ -1,18 +1,15 @@
-{
-  "name": "elderease-senior-sanctuary",
-  "version": "2.0.0",
-  "private": true,
-  "description": "ElderEase senior citizen digital helper with verified Google sign-in and server-side booking records",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "check": "node --check server.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.19.2"
-  },
-  "engines": {
-    "node": ">=20.0.0"
-  }
-}
+services:
+  - type: web
+    name: WEB-app-
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: DEV_PASSWORD
+        sync: false
+
