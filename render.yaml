@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: elderease-app
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DEV_PASSWORD
+        value: ELDER2026
