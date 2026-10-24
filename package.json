@@ -1,16 +1,18 @@
 {
   "name": "elderease-senior-sanctuary",
   "version": "2.0.0",
-  "description": "ElderEase Senior Citizen Digital Helper with Google Auth, Drawer & Royal Developer Console",
+  "private": true,
+  "description": "ElderEase senior citizen digital helper with verified Google sign-in and server-side booking records",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "check": "node --check server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   }
 }
