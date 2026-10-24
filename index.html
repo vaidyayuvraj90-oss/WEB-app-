@@ -10,6 +10,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Noto+Sans+Devanagari:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- ElderEase public frontend configuration — safe to commit to GitHub.
+         BACKEND URL (NOT an API key): https://web-app-kkrx.onrender.com
+         REAL GOOGLE LOGIN: Set the Google OAuth WEB CLIENT ID in the meta below,
+         OR configure the backend to return {"googleClientId":"..."} at GET /api/config.
+         Obtain the ID from Google Cloud Console (it was not supplied here).
+         Add your published GitHub Pages origin (e.g. https://USERNAME.github.io)
+         AND https://web-app-kkrx.onrender.com to Google's Authorized JavaScript origins.
+         REQUIRED server endpoints for this version:
+           POST   /api/auth/google   {credential: <Google ID token>}
+                 -> {success:true, user:{id,email,name,picture,...}, token:<session token>}
+           GET    /api/auth/me       (Authorization: Bearer <session token>)
+           POST   /api/auth/logout
+           GET    /api/bookings/me   (derive user ID from VERIFIED session)
+           POST   /api/bookings      (derive user ID from VERIFIED session)
+           DELETE /api/bookings/:id  (verify record ownership on backend)
+           PUT    /api/user/profile (derive user ID from VERIFIED session)
+           POST   /api/dev/overview  (verify admin password on backend)
+         A real API secret, Google CLIENT SECRET, Google password or developer
+         password must NEVER appear in index.html or any public GitHub file.
+         The frontend does not trust client-supplied email/userId as authorization.
+         User and booking records are stored SERVER-SIDE; the browser only holds
+         a temporary in-memory copy of records returned by the server. -->
+    <meta name="elderease-api-base" content="https://web-app-kkrx.onrender.com">
+    <meta name="google-client-id" content="">
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
@@ -494,40 +518,15 @@
             </div>
 
             <p id="auth-modal-reason" class="text-xs sm:text-sm text-charcoalMuted font-semibold bg-sky-50 border border-sky-200 p-3.5 rounded-2xl">
-                Select an account or enter your Google details below. Your Name & Profile will automatically fill into all booking forms!
+                Use your Google account to sign in. Your verified name and profile can then be used to fill booking forms.
             </p>
 
-            <div class="space-y-2">
-                <p class="text-xs font-extrabold uppercase tracking-wider text-charcoalMuted">Quick Choose Google Account:</p>
-                <button onclick="completeGoogleSignIn('ramesh.deshmukh@gmail.com', 'Rameshwar Deshmukh', '9823011223', '68')" class="w-full p-3 rounded-2xl border-2 border-sanctuaryBorder hover:border-sky-600 hover:bg-sky-50/60 flex items-center gap-3 text-left transition cursor-pointer">
-                    <img src="https://ui-avatars.com/api/?name=Rameshwar+Deshmukh&background=0369A1&color=fff&bold=true" class="w-10 h-10 rounded-full" alt="">
-                    <div class="min-w-0 flex-1">
-                        <p class="font-extrabold text-sm text-charcoalInk truncate">Rameshwar Deshmukh</p>
-                        <p class="text-xs text-charcoalMuted truncate">ramesh.deshmukh@gmail.com</p>
-                    </div>
-                    <span class="text-xs font-bold text-sky-700">Select ➔</span>
-                </button>
-                <button onclick="completeGoogleSignIn('sunita.kulkarni@gmail.com', 'Sunita Kulkarni', '9422099887', '71')" class="w-full p-3 rounded-2xl border-2 border-sanctuaryBorder hover:border-sky-600 hover:bg-sky-50/60 flex items-center gap-3 text-left transition cursor-pointer">
-                    <img src="https://ui-avatars.com/api/?name=Sunita+Kulkarni&background=0284C7&color=fff&bold=true" class="w-10 h-10 rounded-full" alt="">
-                    <div class="min-w-0 flex-1">
-                        <p class="font-extrabold text-sm text-charcoalInk truncate">Sunita Kulkarni</p>
-                        <p class="text-xs text-charcoalMuted truncate">sunita.kulkarni@gmail.com</p>
-                    </div>
-                    <span class="text-xs font-bold text-sky-700">Select ➔</span>
-                </button>
-            </div>
-
-            <div class="pt-3 border-t border-sanctuaryBorder space-y-2.5">
-                <p class="text-xs font-extrabold uppercase tracking-wider text-charcoalMuted">Or Use Your Own Google Account:</p>
-                <input id="g-custom-name" type="text" placeholder="Your Full Name *" class="w-full p-3 rounded-xl border border-sanctuaryBorder text-sm font-semibold">
-                <input id="g-custom-email" type="email" placeholder="Your Gmail (e.g. name@gmail.com) *" class="w-full p-3 rounded-xl border border-sanctuaryBorder text-sm font-semibold">
-                <div class="grid grid-cols-2 gap-2">
-                    <input id="g-custom-phone" type="tel" placeholder="Mobile Number" class="w-full p-3 rounded-xl border border-sanctuaryBorder text-sm font-semibold">
-                    <input id="g-custom-age" type="number" placeholder="Age (e.g. 66)" class="w-full p-3 rounded-xl border border-sanctuaryBorder text-sm font-semibold">
-                </div>
-                <button onclick="submitCustomGoogleLogin()" class="w-full bg-[#0369A1] hover:bg-[#075985] text-white font-extrabold py-3.5 rounded-2xl shadow-md text-sm flex items-center justify-center gap-2 cursor-pointer">
-                    <span>✓ Continue with Google Account</span>
-                </button>
+            <!-- Only REAL Google Identity Services accounts can sign in.
+                 No demo users, manually typed emails, or fake auth fallback. -->
+            <div class="pt-2 space-y-3">
+                <p class="text-xs font-bold text-charcoalMuted">Choose your own Google account in Google's secure sign-in window.</p>
+                <div id="google-signin-button" class="min-h-[44px] flex items-center justify-center"></div>
+                <p id="google-signin-status" role="status" aria-live="polite" class="text-xs font-semibold text-charcoalMuted text-center"></p>
             </div>
         </div>
     </div>
@@ -1127,7 +1126,7 @@
                 </div>
 
                 <div class="space-y-3 text-left">
-                    <label class="block text-xs font-extrabold uppercase tracking-wider text-amber-300">Developer Key 🗝️ (Default: ELDER2026)</label>
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-amber-300">Developer Key 🗝️</label>
                     <input id="dev-password-input" type="password" onkeydown="if(event.key==='Enter') unlockDeveloperConsole()" placeholder="Enter Developer Key..." class="w-full p-4 rounded-2xl bg-slate-900/90 border-2 border-amber-400/50 text-white font-bold text-sm focus:border-amber-300 outline-none">
                     <p id="dev-lock-error" class="text-xs font-extrabold text-red-400 hidden">✕ Access Denied: Invalid Developer Password Key!</p>
                 </div>
@@ -1236,6 +1235,155 @@
         let allTabsExpanded = false;
         let voiceSpeechRate = 0.82;
         let soundChimesEnabled = true;
+
+        // IMPORTANT: All API traffic goes to the user's existing Render backend,
+        // even when index.html is hosted on GitHub Pages (different origin).
+        const API_BASE_URL = new URL(document.querySelector('meta[name="elderease-api-base"]').content).origin;
+        const GOOGLE_CLIENT_ID = document.querySelector('meta[name="google-client-id"]').content.trim();
+        // The browser holds only a temporary access token, not Google passwords.
+        // Server-issued tokens must be checked on EVERY protected API request.
+        let backendAccessToken = sessionStorage.getItem('elderease_access_token') || '';
+        let googleIdentityInitialized = false;
+        let googleIdentityClientId = '';
+
+        async function apiFetch(path, options = {}) {
+            const headers = new Headers(options.headers || {});
+            if (backendAccessToken && !headers.has('Authorization')) {
+                headers.set('Authorization', 'Bearer ' + backendAccessToken);
+            }
+            return fetch(API_BASE_URL + path, {
+                ...options,
+                headers,
+                // Bearer session tokens avoid reliance on third-party cookies on GitHub Pages.
+                credentials: 'omit' 
+            });
+        }
+
+        // Optional server-provided PUBLIC client ID. The backend must still verify
+        // the ID token: Google OAuth Client ID alone is not authentication.
+        async function resolveGoogleClientId() {
+            if (GOOGLE_CLIENT_ID) return GOOGLE_CLIENT_ID;
+            try {
+                const response = await apiFetch('/api/config', { method: 'GET', cache: 'no-store' });
+                if (!response.ok) return '';
+                const config = await response.json();
+                return String(config.googleClientId || config.google_client_id || '').trim();
+            } catch (e) { return ''; }
+        }
+
+        async function renderRealGoogleButton() {
+            const status = document.getElementById('google-signin-status');
+            const target = document.getElementById('google-signin-button');
+            status.textContent = 'Loading secure Google login…';
+            const clientId = await resolveGoogleClientId();
+            if (!clientId) {
+                status.textContent = 'Google login is not configured yet. Add the Google OAuth Web Client ID in the HTML configuration or backend /api/config.';
+                return;
+            }
+            if (!window.google || !google.accounts || !google.accounts.id) {
+                status.textContent = 'Google sign-in could not load. Check your internet connection and try again.';
+                return;
+            }
+            try {
+                if (!googleIdentityInitialized || googleIdentityClientId !== clientId) {
+                    google.accounts.id.initialize({
+                        client_id: clientId,
+                        callback: handleVerifiedGoogleCredential,
+                        auto_select: false,
+                        ux_mode: 'popup'
+                    });
+                    googleIdentityInitialized = true;
+                    googleIdentityClientId = clientId;
+                }
+                target.replaceChildren();
+                google.accounts.id.renderButton(target, {
+                    theme: 'outline', size: 'large', type: 'standard',
+                    text: 'continue_with', shape: 'pill', width: 300
+                });
+                status.textContent = '';
+            } catch (err) {
+                status.textContent = 'Unable to prepare Google sign-in. Please check the OAuth configuration.';
+            }
+        }
+
+        async function handleVerifiedGoogleCredential(response) {
+            const status = document.getElementById('google-signin-status');
+            if (!response || !response.credential) {
+                status.textContent = 'Google did not return a valid sign-in response.';
+                return;
+            }
+            status.textContent = 'Verifying Google sign-in with ElderEase server…';
+            try {
+                // SECURITY CONTRACT: POST /api/auth/google must validate the
+                // Google ID token signature, issuer, audience and expiry on SERVER.
+                // Do not accept a supplied email/name without verification.
+                const res = await apiFetch('/api/auth/google', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ credential: response.credential })
+                });
+                const data = await res.json();
+                const issuedToken = data.token || data.accessToken;
+                if (!res.ok || !data.success || !data.user || !data.user.id ||
+                    !data.user.email || !data.user.name || !issuedToken) {
+                    throw new Error(data.message || data.error || 'The server must verify Google and issue a valid signed-in session.');
+                }
+                // Never trust a typed email/ID; the user object comes only from
+                // the backend after server-side Google ID token verification.
+                backendAccessToken = issuedToken;
+                sessionStorage.setItem('elderease_access_token', backendAccessToken);
+                saveAppointments([]); // Prevent previous account records being shown.
+                currentUser = data.user;
+                currentUser.picture = currentUser.picture ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0369A1&color=fff&bold=true`;
+                localStorage.removeItem('elderease_user'); // Remove former demo-login cache.
+                closeGoogleLoginModal();
+                syncUserUIAndAutoFill();
+                await syncUserBookingsFromServer();
+                showToast(`✓ Signed in as ${currentUser.name}`);
+                speakText(`Welcome ${currentUser.name}. Your profile details have been automatically filled.`);
+                if (typeof pendingProtectedAction === 'function') {
+                    const fn = pendingProtectedAction;
+                    pendingProtectedAction = null;
+                    setTimeout(() => fn(), 250);
+                }
+            } catch (err) {
+                currentUser = null;
+                status.textContent = 'Google sign-in failed: ' + (err.message || 'Backend unavailable or CORS not enabled.');
+                showToast('Google login could not be verified by the server.');
+                syncUserUIAndAutoFill();
+            }
+        }
+
+        // Never restore login from a browser-editable user object. The server
+        // needs to confirm an existing session on every fresh page load.
+        async function restoreServerSession() {
+            localStorage.removeItem('elderease_user');
+            try {
+                const res = await apiFetch('/api/auth/me', { method: 'GET', cache: 'no-store' });
+                if (!res.ok) throw new Error('No active server session');
+                const data = await res.json();
+                if (!data.success || !data.user || !data.user.id || !data.user.email || !data.user.name)
+                    throw new Error('Not authenticated');
+                if (currentUser) return; // Do not replace a newer Google sign-in with a stale check.
+                bookingRecords = [];
+                currentUser = data.user;
+                currentUser.picture = currentUser.picture ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0369A1&color=fff&bold=true`;
+                syncUserUIAndAutoFill();
+                await syncUserBookingsFromServer();
+            } catch (e) {
+                // An unsupported /api/auth/me or an expired session means guest mode.
+                if (!currentUser) {
+                    backendAccessToken = '';
+                    sessionStorage.removeItem('elderease_access_token');
+                    bookingRecords = [];
+                    bookingHistoryError = '';
+                    syncUserUIAndAutoFill();
+                    renderAppointments();
+                }
+            }
+        }
 
         let currentUser = null;
         let pendingProtectedAction = null;
@@ -1554,6 +1702,7 @@
             closeDrawer();
             showMainView('history');
             renderUserHistoryView();
+            if (currentUser) syncUserBookingsFromServer();
         }
 
         function openSettingsView() {
@@ -1590,13 +1739,10 @@
             playChime();
             const modal = document.getElementById('google-auth-modal');
             const reasonEl = document.getElementById('auth-modal-reason');
-            if (reasonText) {
-                reasonEl.innerText = reasonText;
-            } else {
-                reasonEl.innerText = "Select a Google account or enter your details below. Your Name & Profile will automatically fill into all booking forms!";
-            }
+            reasonEl.innerText = reasonText || 'Sign in using your real Google account to auto-fill forms and access your booking history.';
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            renderRealGoogleButton();
         }
 
         function closeGoogleLoginModal() {
@@ -1605,67 +1751,23 @@
             modal.classList.remove('flex');
         }
 
-        function submitCustomGoogleLogin() {
-            const name = document.getElementById('g-custom-name').value.trim();
-            const email = document.getElementById('g-custom-email').value.trim();
-            const phone = document.getElementById('g-custom-phone').value.trim();
-            const age = document.getElementById('g-custom-age').value.trim();
-            if (!name || !email) {
-                showToast("Please enter both your Name and Google Email.");
-                return;
-            }
-            completeGoogleSignIn(email, name, phone, age);
-        }
-
-        async function completeGoogleSignIn(email, name, phone = '', age = '') {
-            playChime();
-            const payload = {
-                email,
-                name,
-                phone,
-                age,
-                picture: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0369A1&color=fff&bold=true`
-            };
-
-            try {
-                const res = await fetch('/api/auth/google', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                if (data.success && data.user) {
-                    currentUser = data.user;
-                } else {
-                    currentUser = { id: 'usr_local_' + Date.now(), ...payload };
-                }
-            } catch (err) {
-                currentUser = { id: 'usr_local_' + Date.now(), ...payload };
-            }
-
-            localStorage.setItem('elderease_user', JSON.stringify(currentUser));
-            closeGoogleLoginModal();
-            syncUserUIAndAutoFill();
-            await syncUserBookingsFromServer();
-            showToast(`✓ Signed in as ${currentUser.name}`);
-            speakText(`Welcome ${currentUser.name}. Your profile details have been automatically filled.`);
-
-            if (typeof pendingProtectedAction === 'function') {
-                const fn = pendingProtectedAction;
-                pendingProtectedAction = null;
-                setTimeout(() => fn(), 250);
-            }
-        }
-
-        function logoutUser() {
+        async function logoutUser() {
             playChime();
             const oldName = currentUser ? currentUser.name : '';
+            try { await apiFetch('/api/auth/logout', { method: 'POST' }); } catch (e) {}
             currentUser = null;
+            bookingRecords = [];
+            bookingHistoryError = '';
+            latestAppointmentId = null;
+            backendAccessToken = '';
             pendingProtectedAction = null;
+            sessionStorage.removeItem('elderease_access_token');
             localStorage.removeItem('elderease_user');
+            if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
             syncUserUIAndAutoFill();
             closeDrawer();
             showMainView('home');
+            renderAppointments();
             showToast(`Signed out ${oldName}. You can log in again anytime.`);
         }
 
@@ -1751,38 +1853,33 @@
             const phone = document.getElementById('prof-phone').value.trim();
             const age = document.getElementById('prof-age').value.trim();
             const address = document.getElementById('prof-address').value.trim();
+            if (!name) { showToast('Name cannot be empty.'); return; }
 
-            if (!name) {
-                showToast("Name cannot be empty.");
-                return;
-            }
-
-            currentUser.name = name;
-            currentUser.phone = phone;
-            currentUser.age = age;
-            currentUser.address = address;
-            currentUser.picture = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0369A1&color=fff&bold=true`;
-
+            // The server identifies the account from the verified session,
+            // never from a caller-provided email or user ID.
+            const updatedProfile = { name, phone, age, address };
             try {
-                const res = await fetch('/api/user/profile', {
+                const res = await apiFetch('/api/user/profile', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(currentUser)
+                    body: JSON.stringify(updatedProfile)
                 });
                 const data = await res.json();
-                if (data.success && data.user) currentUser = data.user;
-            } catch (e) {}
-
-            localStorage.setItem('elderease_user', JSON.stringify(currentUser));
-
+                if (!res.ok || !data.success || !data.user) throw new Error(data.message || 'Profile not saved');
+                currentUser = data.user;
+                currentUser.picture = currentUser.picture ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=0369A1&color=fff&bold=true`;
+            } catch (err) {
+                showToast('Could not save profile to the server. Please retry.');
+                return;
+            }
             document.getElementById('appt-name').value = currentUser.name || '';
             document.getElementById('appt-phone').value = currentUser.phone || '';
             document.getElementById('appt-age').value = currentUser.age || '';
             document.getElementById('v-name').value = currentUser.name || '';
             document.getElementById('v-phone').value = currentUser.phone || '';
-
             syncUserUIAndAutoFill();
-            showToast("✓ Profile updated & auto-filled into forms!");
+            showToast('✓ Profile updated & auto-filled into forms!');
         }
 
         let latestAppointmentId = null;
@@ -1797,39 +1894,65 @@
             'United CIIGMA Hospital': 'https://ciigmagroup.org/'
         };
 
+        // Booking data is NEVER persisted in browser localStorage.
+        // The backend stores text records linked to the VERIFIED user ID; no PDF
+        // or physical receipt file is needed. Printable slips are generated on demand.
+        let bookingRecords = [];
+        let bookingHistoryError = '';
+        let bookingsLoading = false;
+
         function getAppointments() {
-            try { return JSON.parse(localStorage.getItem('elderease_appointments') || '[]'); }
-            catch (e) { return []; }
+            return currentUser ? bookingRecords : [];
         }
 
         function saveAppointments(items) {
-            try { localStorage.setItem('elderease_appointments', JSON.stringify(items)); }
-            catch (e) { showToast('Could not save on this browser. Please print the slip now.'); }
+            // Temporary display state only; NOT a substitute for a server save.
+            bookingRecords = currentUser && Array.isArray(items) ? items : [];
+        }
+
+        function bookingFromServer(b) {
+            return {
+                id: String(b.id || ''),
+                type: b.type || 'APPOINTMENT',
+                hospital: b.title || b.hospital || '',
+                name: b.patientName || b.name || '',
+                phone: b.phone || '',
+                age: b.age || '',
+                department: b.department || '',
+                date: b.date || '',
+                time: b.time || '',
+                reason: b.reason || '',
+                createdAt: b.createdAt || ''
+            };
         }
 
         async function syncUserBookingsFromServer() {
-            if (!currentUser || !currentUser.email) return;
+            if (!currentUser || !backendAccessToken) return;
+            const requestedUserId = currentUser.id;
+            bookingsLoading = true;
+            bookingHistoryError = '';
+            renderUserHistoryView();
             try {
-                const res = await fetch('/api/bookings/user/' + encodeURIComponent(currentUser.email));
+                // REQUIRED BACKEND CHANGE: use GET /api/bookings/me, NOT a
+                // user-supplied email address. The backend obtains Google user ID
+                // from the authenticated access token and filters records by it.
+                const res = await apiFetch('/api/bookings/me', { cache: 'no-store' });
                 const data = await res.json();
-                if (data.success && Array.isArray(data.bookings)) {
-                    const mapped = data.bookings.map(b => ({
-                        id: b.id,
-                        type: b.type || 'APPOINTMENT',
-                        hospital: b.title,
-                        name: b.patientName,
-                        phone: b.phone,
-                        age: b.age,
-                        department: b.department,
-                        date: b.date,
-                        time: b.time,
-                        reason: b.reason,
-                        createdAt: b.createdAt
-                    }));
-                    saveAppointments(mapped);
-                    renderAppointments();
+                if (!res.ok || !data.success || !Array.isArray(data.bookings)) {
+                    throw new Error(data.error || 'Could not retrieve your account history.');
                 }
-            } catch (e) {}
+                if (!currentUser || currentUser.id !== requestedUserId) return;
+                saveAppointments(data.bookings.map(bookingFromServer));
+                renderAppointments();
+            } catch (err) {
+                if (!currentUser || currentUser.id !== requestedUserId) return;
+                bookingHistoryError = 'Your server booking history could not be loaded. Please try again.';
+            } finally {
+                if (currentUser && currentUser.id === requestedUserId) {
+                    bookingsLoading = false;
+                    renderUserHistoryView();
+                }
+            }
         }
 
         async function createAppointment() {
@@ -1857,28 +1980,13 @@
             const time = document.getElementById('appt-time').value;
             const reason = document.getElementById('appt-reason').value.trim();
 
-            let appt = {
-                id: 'EE-' + Date.now().toString().slice(-8),
-                type: 'APPOINTMENT',
-                hospital,
-                name,
-                phone,
-                age,
-                department,
-                date,
-                time,
-                reason,
-                createdAt: new Date().toLocaleString()
-            };
-
+            // The server creates the unique ID and saves the text booking.
+            // Do not display a fake receipt if the server cannot save it.
             try {
-                const res = await fetch('/api/bookings', {
+                const res = await apiFetch('/api/bookings', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        userId: currentUser.id,
-                        userEmail: currentUser.email,
-                        userName: currentUser.name,
                         type: 'APPOINTMENT',
                         title: hospital,
                         patientName: name,
@@ -1891,20 +1999,22 @@
                     })
                 });
                 const data = await res.json();
-                if (data.success && data.booking) {
-                    appt.id = data.booking.id;
-                    appt.createdAt = data.booking.createdAt;
+                if (!res.ok || !data.success || !data.booking || !data.booking.id) {
+                    throw new Error(data.error || 'Server did not confirm the appointment request.');
                 }
-            } catch (e) {}
-
-            const items = getAppointments();
-            items.unshift(appt);
-            saveAppointments(items);
-            latestAppointmentId = appt.id;
-            document.getElementById('appt-result').classList.remove('hidden');
-            document.getElementById('appt-result-text').textContent = 'Slip No: ' + appt.id + ' | ' + appt.hospital + ' | ' + appt.date + ' (' + appt.time + ')';
-            renderAppointments();
-            speakText('Your appointment request slip has been created and saved to your history.');
+                const appt = bookingFromServer(data.booking);
+                saveAppointments([appt, ...getAppointments().filter(item => item.id !== appt.id)]);
+                latestAppointmentId = appt.id;
+                document.getElementById('appt-result').classList.remove('hidden');
+                document.getElementById('appt-result-text').textContent = 'Slip No: ' + appt.id + ' | ' + appt.hospital + ' | ' + appt.date + ' (' + appt.time + ')';
+                renderAppointments();
+                renderUserHistoryView();
+                showToast('✓ Appointment request saved to your server history.');
+                speakText('Your appointment request slip has been saved in your account history.');
+            } catch (err) {
+                document.getElementById('appt-result').classList.add('hidden');
+                showToast('Appointment not saved on the server. Please try again.');
+            }
         }
 
         async function requestVolunteer() {
@@ -1921,54 +2031,38 @@
             const name = document.getElementById('v-name').value.trim() || currentUser.name;
             const phone = document.getElementById('v-phone').value.trim() || currentUser.phone;
             if (name && phone) {
-                let volSlip = {
-                    id: 'EE-' + Date.now().toString().slice(-8),
-                    type: 'VOLUNTEER',
-                    hospital: 'Student Volunteer Home Visit',
-                    name,
-                    phone,
-                    age: currentUser.age || '',
-                    department: 'Smartphone & Govt Form Help',
-                    date: new Date().toISOString().slice(0, 10),
-                    time: 'Daytime Visit',
-                    reason: 'Home visit requested by senior citizen',
-                    createdAt: new Date().toLocaleString()
-                };
-
+                const visitDate = new Date().toISOString().slice(0, 10);
                 try {
-                    const res = await fetch('/api/bookings', {
+                    const res = await apiFetch('/api/bookings', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            userId: currentUser.id,
-                            userEmail: currentUser.email,
-                            userName: currentUser.name,
                             type: 'VOLUNTEER',
                             title: 'Student Volunteer Home Visit',
                             patientName: name,
                             phone,
                             age: currentUser.age || '',
                             department: 'Smartphone & Govt Form Help',
-                            date: volSlip.date,
-                            time: volSlip.time,
-                            reason: volSlip.reason
+                            date: visitDate,
+                            time: 'Daytime Visit',
+                            reason: 'Home visit requested by senior citizen'
                         })
                     });
                     const data = await res.json();
-                    if (data.success && data.booking) {
-                        volSlip.id = data.booking.id;
-                        volSlip.createdAt = data.booking.createdAt;
+                    if (!res.ok || !data.success || !data.booking || !data.booking.id) {
+                        throw new Error(data.error || 'Volunteer request was not confirmed.');
                     }
-                } catch (e) {}
-
-                const items = getAppointments();
-                items.unshift(volSlip);
-                saveAppointments(items);
-                renderAppointments();
-
-                document.getElementById('v-msg').classList.remove('hidden');
-                showToast("✓ Volunteer request registered & added to your History!");
-                speakText("Volunteer request successfully sent. Someone will call you shortly.");
+                    const savedVisit = bookingFromServer(data.booking);
+                    saveAppointments([savedVisit, ...getAppointments().filter(item => item.id !== savedVisit.id)]);
+                    renderAppointments();
+                    renderUserHistoryView();
+                    document.getElementById('v-msg').classList.remove('hidden');
+                    showToast('✓ Volunteer request saved to your server history!');
+                    speakText('Volunteer request successfully sent.');
+                } catch (err) {
+                    document.getElementById('v-msg').classList.add('hidden');
+                    showToast('Request not saved on the server. Please retry later.');
+                }
             } else {
                 showToast("Please enter your name and phone number / कृपया नाव आणि फोन नंबर प्रविष्ट करा");
                 speakText("Please enter your name and phone number.");
@@ -1989,12 +2083,19 @@
         function renderUserHistoryView() {
             const container = document.getElementById('history-container');
             const items = getAppointments();
-            if (!items.length) {
+            if (!currentUser || bookingsLoading || bookingHistoryError || !items.length) {
+                const statusTitle = !currentUser ? 'Sign in to View Your History' :
+                    bookingsLoading ? 'Loading Your Booking History…' :
+                    bookingHistoryError ? 'Booking History Is Temporarily Unavailable' :
+                    'No Bookings in Your History Yet';
+                const statusDescription = !currentUser ? 'Use Google Login to view your server-saved requests.' :
+                    bookingsLoading ? 'Retrieving records linked to your verified account ID.' :
+                    bookingHistoryError || 'When you request an appointment or volunteer visit, its text record will appear here.';
                 container.innerHTML = `
                     <div class="p-8 rounded-3xl border-2 border-dashed border-sanctuaryBorder text-center space-y-3">
                         <p class="text-3xl">📭</p>
-                        <p class="font-extrabold text-base text-charcoalInk">No Bookings in Your History Yet</p>
-                        <p class="text-xs text-charcoalMuted">When you book a hospital appointment or volunteer visit, your timestamped slips and printable receipts will appear here.</p>
+                        <p class="font-extrabold text-base text-charcoalInk">${escapeHtml(statusTitle)}</p>
+                        <p class="text-xs text-charcoalMuted">${escapeHtml(statusDescription)}</p>
                     </div>
                 `;
                 return;
@@ -2018,7 +2119,7 @@
                         <button onclick="printAppointment('${escapeHtml(a.id)}')" class="px-4 py-2.5 rounded-xl bg-[#0369A1] hover:bg-[#075985] text-white font-extrabold text-xs shadow cursor-pointer">
                             🧾 Print Receipt
                         </button>
-                        <button onclick="deleteAppointment('${escapeHtml(a.id)}'); renderUserHistoryView();" class="px-3.5 py-2.5 rounded-xl border-2 border-red-200 text-red-700 hover:bg-red-50 font-extrabold text-xs cursor-pointer">
+                        <button onclick="deleteAppointment('${escapeHtml(a.id)}')" class="px-3.5 py-2.5 rounded-xl border-2 border-red-200 text-red-700 hover:bg-red-50 font-extrabold text-xs cursor-pointer">
                             Delete
                         </button>
                     </div>
@@ -2042,9 +2143,23 @@
         function printLatestAppointment() { const id = latestAppointmentId; if (id) printAppointment(id); else showToast('Create an appointment slip first.'); }
         function printAllAppointments() { printSlips(getAppointments()); }
         async function deleteAppointment(id) {
-            saveAppointments(getAppointments().filter(a => a.id !== id));
-            renderAppointments();
-            try { await fetch('/api/bookings/' + encodeURIComponent(id), { method: 'DELETE' }); } catch (e) {}
+            if (!currentUser || !backendAccessToken) {
+                showToast('Sign in to manage booking records.');
+                return;
+            }
+            try {
+                // Backend MUST verify the booking belongs to the signed-in user.
+                const res = await apiFetch('/api/bookings/' + encodeURIComponent(id), { method: 'DELETE' });
+                const data = await res.json();
+                if (!res.ok || !data.success) throw new Error(data.error || 'Delete was not confirmed.');
+                saveAppointments(getAppointments().filter(a => a.id !== id));
+                if (latestAppointmentId === id) latestAppointmentId = null;
+                renderAppointments();
+                renderUserHistoryView();
+                showToast('Booking request removed from server history.');
+            } catch (e) {
+                showToast('Could not delete the record on the server. Please retry.');
+            }
         }
 
         function openSelectedHospitalBooking() {
@@ -2085,7 +2200,7 @@
             const errEl = document.getElementById('dev-lock-error');
 
             try {
-                const res = await fetch('/api/dev/overview', {
+                const res = await apiFetch('/api/dev/overview', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: passInput })
@@ -2104,33 +2219,16 @@
                 renderDeveloperDashboard(data);
                 showToast("👑 Welcome to the Royal Developer Console!");
             } catch (err) {
-                if (passInput === 'ELDER2026') {
-                    errEl.classList.add('hidden');
-                    devPassCache = passInput;
-                    const localBookings = getAppointments();
-                    const fallbackUsers = currentUser ? [{
-                        ...currentUser,
-                        bookingCount: localBookings.length,
-                        bookings: localBookings
-                    }] : [];
-                    devUsersCache = fallbackUsers;
-                    document.getElementById('dev-lock-screen').classList.add('hidden');
-                    document.getElementById('dev-dashboard-screen').classList.remove('hidden');
-                    renderDeveloperDashboard({
-                        totalUsers: fallbackUsers.length,
-                        totalBookings: localBookings.length,
-                        users: fallbackUsers
-                    });
-                } else {
-                    errEl.classList.remove('hidden');
-                }
+                // Never unlock developer mode if the backend cannot check the key.
+                errEl.classList.remove('hidden');
+                showToast('Developer verification unavailable. Check the Render backend.');
             }
         }
 
         async function refreshDeveloperData() {
             if (!devPassCache) return;
             try {
-                const res = await fetch('/api/dev/overview', {
+                const res = await apiFetch('/api/dev/overview', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password: devPassCache })
@@ -2276,6 +2374,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Migration: clear leftovers from older versions that stored user
+            // identity and booking data in browser localStorage. Theme stays.
+            try {
+                localStorage.removeItem('elderease_user');
+                Object.keys(localStorage).filter(k => k.startsWith('elderease_appointments_'))
+                    .forEach(k => localStorage.removeItem(k));
+            } catch (e) {}
             const dateInput = document.getElementById('appt-date');
             if (dateInput) {
                 const d = new Date();
@@ -2287,18 +2392,9 @@
                 document.body.classList.add('dark-sanctuary');
             }
 
-            try {
-                const savedUser = JSON.parse(localStorage.getItem('elderease_user') || 'null');
-                if (savedUser && savedUser.email) {
-                    currentUser = savedUser;
-                }
-            } catch (e) {}
-
             syncUserUIAndAutoFill();
             renderAppointments();
-            if (currentUser) {
-                syncUserBookingsFromServer();
-            }
+            restoreServerSession(); // GET /api/auth/me validates existing session.
         });
     </script>
 </body>
