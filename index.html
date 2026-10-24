@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElderEase: Senior Citizen Digital Helper</title>
+    
+    <!-- Google Fonts: Fraunces (Royal Editorial Serif) + Plus Jakarta Sans (High-Legibility Humanist Sans) + Noto Sans Devanagari -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Noto+Sans+Devanagari:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Tailwind CSS for Adaptive Multi-Ratio Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Noto Sans Devanagari"', 'sans-serif'],
+                        serif: ['"Fraunces"', '"Noto Sans Devanagari"', 'serif'],
+                    },
+                    colors: {
+                        /* Sky-blue palette */
+                        sanctuaryBg: '#F5FAFE',       /* Warm Alabaster - eliminates harsh pure-white eye glare */
+                        sanctuarySurface: '#EAF4FB',  /* Soft Ivory - gentle depth and separation */
+                        sanctuaryBorder: '#CFE3F1',   /* Warm Cashmere Border */
+                        emeraldDeep: '#0369A1',       /* Imperial Emerald - psychological safety, health & stability */
+                        emeraldRich: '#075985',       /* Heritage Pine - interactive states */
+                        emeraldSoft: '#E0F2FE',       /* Soft Sage Tint - soothing highlights */
+                        goldChampagne: '#BAE6FD',     /* Brushed Champagne Gold - royal concierge warmth */
+                        goldRich: '#38BDF8',          /* Deep Warm Amber - accessible luxury accent */
+                        goldLight: '#EAF6FE',         /* Soft Cream Gold - gentle badge backgrounds */
+                        charcoalInk: '#0F2A3D',       /* Deep Charcoal Slate - AAA contrast legibility */
+                        charcoalMuted: '#44607A',     /* Secondary balanced text */
+                        
+                        /* Legacy alias tokens preserved for compatibility */
+                        brownBase: '#0369A1',
+                        brownDark: '#0F2A3D',
+                        brownAccent: '#38BDF8',
+                        skinLight: '#F5FAFE',
+                        skinCard: '#EAF4FB',
+                        skinBorder: '#CFE3F1',
+                        terracotta: '#0EA5E9'
+                    },
+                    boxShadow: {
+                        'royal': '0 12px 32px -8px rgba(3, 105, 161, 0.08), 0 4px 12px -2px rgba(3, 105, 161, 0.04)',
+                        'royal-lg': '0 20px 45px -12px rgba(3, 105, 161, 0.15), 0 8px 18px -4px rgba(3, 105, 161, 0.06)',
+                        'gold-glow': '0 8px 24px -4px rgba(14, 165, 233, 0.28)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Zero-Turbulence Fluid Physics & Accessibility Transitions */
+        * {
+            transition: background-color 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                        border-color 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                        color 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Subtle Custom Scrollbar for Desktop & Tablet */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F5FAFE;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #A9CDE4;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0369A1;
+        }
+
+        /* Large Text Accessibility Mode - Proportionally Scales Across Any Ratio */
+        .text-scale-large {
+            font-size: 1.2rem !important;
+        }
+        .text-scale-large .text-xs {
+            font-size: 1rem !important;
+            line-height: 1.5rem !important;
+        }
+        .text-scale-large .text-sm {
+            font-size: 1.15rem !important;
+            line-height: 1.65rem !important;
+        }
+        .text-scale-large .text-base {
+            font-size: 1.3rem !important;
+            line-height: 1.8rem !important;
+        }
+        .text-scale-large .text-lg {
+            font-size: 1.45rem !important;
+            line-height: 1.95rem !important;
+        }
+        .text-scale-large .text-xl {
+            font-size: 1.65rem !important;
+            line-height: 2.1rem !important;
+        }
+        .text-scale-large .text-2xl,
+        .text-scale-large .text-3xl {
+            font-size: 2.1rem !important;
+            line-height: 2.5rem !important;
+        }
+
+        /* Extra-Large Text Option from Settings */
+        .text-scale-xlarge {
+            font-size: 1.35rem !important;
+        }
+        .text-scale-xlarge .text-xs { font-size: 1.12rem !important; line-height: 1.65rem !important; }
+        .text-scale-xlarge .text-sm { font-size: 1.28rem !important; line-height: 1.8rem !important; }
+        .text-scale-xlarge .text-base { font-size: 1.45rem !important; line-height: 1.95rem !important; }
+        .text-scale-xlarge .text-lg { font-size: 1.6rem !important; line-height: 2.1rem !important; }
+
+        /* Smooth Turbulence-Free Panel Reveal */
+        .tab-content-active {
+            animation: royalReveal 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes royalReveal {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Service Card Hover Elevation */
+        .service-card {
+            transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .service-card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Subtle Ambient Pattern for Executive Hero */
+        .hero-pattern {
+            background-image: radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.22) 0%, transparent 45%),
+                              radial-gradient(circle at 10% 90%, rgba(7, 89, 133, 0.55) 0%, transparent 50%);
+        }
+
+        /* ===== ElderEase sky skin ===== */
+        :root{--sky:#0369A1;--sky2:#0284C7;--ink:#0F2A3D;--muted:#44607A;--line:#CFE3F1;--amber:#FFB800}
+        body{background:radial-gradient(900px 420px at 90% -80px,#DDF0FC,transparent 70%),#F5FAFE!important;color:var(--ink)}
+        h1,h2,h3{letter-spacing:-.01em}
+        header{background:linear-gradient(90deg,#0284C7,#0369A1)!important;border-bottom:3px solid #7DD3FC!important}
+        header h1{color:#fff!important}
+        header .text-goldChampagne{color:#E0F2FE!important}
+        section.hero-pattern{background:radial-gradient(520px 260px at 100% 0%,rgba(255,255,255,.28),transparent 70%),radial-gradient(380px 220px at 0% 100%,rgba(125,211,252,.35),transparent 70%),linear-gradient(135deg,#0EA5E9 0%,#0284C7 50%,#0369A1 100%)!important;border:0!important;box-shadow:0 22px 44px -18px rgba(3,105,161,.55)!important}
+        section.hero-pattern h2{color:#fff!important;font-weight:800}
+        section.hero-pattern p{color:#EAF6FE!important}
+        section.hero-pattern .bg-goldChampagne{background:#fff!important;color:#0369A1!important}
+        section.hero-pattern button[onclick="speakWelcomeMessage()"]{background:linear-gradient(180deg,#FFD54A,#FFB800)!important;color:#1B2B3A!important;box-shadow:0 10px 22px -8px rgba(255,184,0,.7)!important}
+        section.hero-pattern button[onclick="speakWelcomeMessage()"] span.text-2xl{background:rgba(255,255,255,.55)!important}
+        section.space-y-4 h3{font-family:'Plus Jakarta Sans','Noto Sans Devanagari',sans-serif!important;font-weight:800!important;color:var(--ink)!important;border-left-color:#0EA5E9!important}
+        .text-goldRich{color:#0369A1!important}
+        button[onclick^="jumpToService"]{border-width:1.5px!important;border-bottom-width:3px!important}
+        button[onclick="jumpToService('tab-hospitals')"]{border-bottom-color:#0EA5E9!important}
+        button[onclick="jumpToService('tab-forms')"]{border-bottom-color:#6D5BD0!important}
+        button[onclick="jumpToService('tab-emergency')"]{border-bottom-color:#C62828!important}
+        button[onclick="jumpToService('tab-transport')"]{border-bottom-color:#F5A623!important}
+        button[onclick="jumpToService('tab-stores')"]{border-bottom-color:#F08A3C!important}
+        button[onclick="jumpToService('tab-navigator')"]{border-bottom-color:#0E7490!important;background:#fff!important}
+        button[onclick="jumpToService('tab-volunteer')"]{border-bottom-color:#BE3A7A!important}
+        #card-tab-hospitals{--acc:#0284C7;--tint:#E0F2FE;--on:#fff}
+        #card-tab-forms{--acc:#6D5BD0;--tint:#EEEBFD;--on:#fff}
+        #card-tab-emergency{--acc:#C62828;--tint:#FDECEC;--on:#fff}
+        #card-tab-transport{--acc:#F5A623;--tint:#FFF3D6;--on:#1B2B3A}
+        #card-tab-stores{--acc:#C2570C;--tint:#FFEBDD;--on:#fff}
+        #card-tab-navigator{--acc:#0E7490;--tint:#DDF3F8;--on:#fff}
+        #card-tab-volunteer{--acc:#BE3A7A;--tint:#FBE6F0;--on:#fff}
+        .service-card{border:1.5px solid var(--line)!important;box-shadow:inset 0 5px 0 var(--acc),0 14px 30px -16px rgba(3,105,161,.3)!important;border-radius:1.75rem!important}
+        .service-card:hover{box-shadow:inset 0 5px 0 var(--acc),0 20px 38px -16px rgba(3,105,161,.38)!important}
+        .service-card>button{background:linear-gradient(90deg,var(--tint),#fff 85%)!important;padding-top:1.5rem!important}
+        .service-card>button>span:first-child>span:first-child{background:#fff!important;border:2px solid var(--acc)!important;box-shadow:0 6px 14px -6px var(--acc)!important;color:inherit}
+        .service-card>button>span:first-child>span:first-child .ee-ic{width:2.5rem;height:2.5rem}
+        .service-card>button .uppercase{color:var(--acc)!important;font-size:.74rem!important;font-weight:800!important;letter-spacing:.1em!important}
+        #card-tab-transport>button .uppercase{color:#B7770A!important}
+        .service-card>button .font-serif{font-family:'Plus Jakarta Sans','Noto Sans Devanagari',sans-serif!important;font-weight:800!important;font-size:1.12rem!important;line-height:1.3!important;color:var(--ink)!important}
+        .service-card>button [id^="arrow-"]{background:#fff!important;color:var(--acc)!important;border:2px solid var(--acc)!important}
+        .service-card>div[id^="tab-"]{background:#F8FCFF!important;border-top:1.5px solid var(--line)!important}
+        .service-card div[id^="tab-"] p.font-extrabold{font-size:1.04rem;font-weight:800;color:var(--ink)!important}
+        .service-card div[id^="tab-"] p.text-charcoalMuted,.service-card div[id^="tab-"] p.font-medium{color:var(--muted)!important}
+        .service-card div[id^="tab-"]>p:first-child{color:var(--muted)!important;font-weight:700!important}
+        .service-card div[id^="tab-"] button[onclick^="openGoogleMaps"]{border:1.5px solid var(--line)!important;border-radius:1.25rem!important;background:#fff!important}
+        .service-card div[id^="tab-"] button[onclick^="openGoogleMaps"]:hover{border-color:var(--acc)!important;background:var(--tint)!important}
+        .service-card div[id^="tab-"] button[onclick^="openGoogleMaps"] span.shrink-0,.service-card div[id^="tab-"] button[onclick^="speakText"] span.rounded-lg{background:var(--acc)!important;color:var(--on)!important}
+        .service-card div[id^="tab-"] button[onclick^="openGoogleMaps"]:hover span.shrink-0{color:var(--on)!important}
+        .service-card div[id^="tab-"] button[onclick^="speakText"]:not(.group){background:var(--tint)!important;border:1.5px solid var(--acc)!important;color:var(--ink)!important}
+        .service-card div[id^="tab-"] button[onclick^="speakText"].bg-emeraldDeep{background:var(--acc)!important;color:var(--on)!important}
+        .service-card span.shrink-0{white-space:nowrap}
+        .ee-sub{display:flex!important;align-items:center;justify-content:center;flex:none;background:var(--tint)!important;width:3rem!important;height:3rem!important;border-radius:1rem!important}
+        .ee-sub .ee-ic{width:2rem;height:2rem}
+        #card-tab-emergency a.bg-emeraldDeep{background:#fff!important;color:var(--ink)!important;border:2px solid #C62828!important}
+        #card-tab-emergency a.bg-red-700{box-shadow:0 10px 22px -10px rgba(198,40,40,.7)!important}
+        input,select,textarea{background:#fff!important;border:1.5px solid #B7D4E8!important;border-radius:1rem!important;color:var(--ink)!important;font-size:1rem!important}
+        input:focus,select:focus,textarea:focus{border-color:#0284C7!important;box-shadow:0 0 0 4px rgba(2,132,199,.18)!important;outline:none}
+        #appointment-section{border:1.5px solid #7DD3FC!important;box-shadow:0 14px 30px -18px rgba(3,105,161,.4)!important}
+        #appointment-section h3{font-family:'Plus Jakarta Sans','Noto Sans Devanagari',sans-serif!important;font-weight:800!important;color:var(--ink)!important}
+        #appointment-section button[onclick="createAppointment()"]{background:linear-gradient(180deg,#FFD54A,#FFB800)!important;color:#1B2B3A!important;box-shadow:0 10px 22px -10px rgba(255,184,0,.8)!important}
+        footer{background:linear-gradient(90deg,#0369A1,#075985)!important;border-top:3px solid #7DD3FC!important}
+        footer .bg-goldChampagne{background:#fff!important;color:#0369A1!important}
+        .ee-ic{display:block;overflow:visible;flex:none}
+        .ee-ic *{transform-box:fill-box;transform-origin:center}
+        .a-pulse{animation:eePulse 3.4s ease-in-out infinite}
+        .a-bob{animation:eeBob 3.6s ease-in-out infinite}
+        .a-sway{transform-origin:50% 10%;animation:eeSway 4.2s ease-in-out infinite}
+        .a-blink{animation:eeBlink 2.4s ease-in-out infinite}
+        .a-write{animation:eeWrite 3.2s ease-in-out infinite}
+        .a-drift{animation:eeDrift 2.8s ease-in-out infinite}
+        .a-ping{animation:eePing 3s ease-out infinite}
+        .a-beat{animation:eeBeat 2.6s ease-in-out infinite}
+        @keyframes eePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+        @keyframes eeBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
+        @keyframes eeSway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+        @keyframes eeBlink{0%,100%{opacity:1}50%{opacity:.45}}
+        @keyframes eeWrite{0%,100%{transform:translate(0,0)}50%{transform:translate(-2px,-2px)}}
+        @keyframes eeDrift{0%,100%{opacity:.35;transform:translateX(2px)}50%{opacity:1;transform:translateX(-1px)}}
+        @keyframes eePing{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.5);opacity:0}}
+        @keyframes eeBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+        .text-scale-large .service-card>button .font-serif{font-size:1.4rem!important}
+        .text-scale-large .service-card>button .uppercase{font-size:.9rem!important}
+        .text-scale-large .ee-ic{transform:scale(1.1)}
+        @media (prefers-reduced-motion:reduce){.ee-ic *{animation:none!important}}
+
+        /* ===== Dark Mode Sanctuary Theme ===== */
+        body.dark-sanctuary {
+            --ink: #F1F5F9;
+            --muted: #94A3B8;
+            --line: #1E3A5F;
+            background: radial-gradient(900px 420px at 90% -80px, #0C4A6E, transparent 70%), #07192B !important;
+            color: #F1F5F9 !important;
+        }
+        body.dark-sanctuary .service-card,
+        body.dark-sanctuary #appointment-section,
+        body.dark-sanctuary .subview-surface {
+            background: #0F2742 !important;
+            border-color: #1E3A5F !important;
+            color: #F1F5F9 !important;
+        }
+        body.dark-sanctuary .service-card > button {
+            background: linear-gradient(90deg, #123254, #0F2742 85%) !important;
+        }
+        body.dark-sanctuary .service-card > div[id^="tab-"] {
+            background: #0A1E36 !important;
+            border-top-color: #1E3A5F !important;
+        }
+        body.dark-sanctuary .service-card div[id^="tab-"] button[onclick^="openGoogleMaps"],
+        body.dark-sanctuary input,
+        body.dark-sanctuary select,
+        body.dark-sanctuary textarea {
+            background: #07192B !important;
+            color: #F8FAFC !important;
+            border-color: #254B73 !important;
+        }
+        body.dark-sanctuary .service-card > button .font-serif,
+        body.dark-sanctuary section.space-y-4 h3,
+        body.dark-sanctuary #appointment-section h3 {
+            color: #F8FAFC !important;
+        }
+    </style>
+    <meta name="theme-color" content="#0369A1">
+</head>
+<body class="bg-sanctuaryBg text-charcoalInk font-sans min-h-screen flex flex-col justify-between antialiased selection:bg-goldChampagne selection:text-emeraldDeep" id="app-root">
+
+    <!-- STICKY CONCIERGE HEADER -->
+    <header class="bg-emeraldDeep/95 backdrop-blur-md text-sanctuaryBg sticky top-0 z-50 shadow-royal border-b border-goldChampagne/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap justify-between items-center gap-3">
+            <!-- Brand Crest, Drawer Trigger & Title -->
+            <div class="flex items-center space-x-3.5">
+                <button onclick="openDrawer()" aria-label="Open Navigation Drawer" class="bg-white/15 hover:bg-white/25 text-white w-12 h-12 rounded-2xl flex items-center justify-center border border-white/30 shadow-sm active:scale-95 cursor-pointer shrink-0" title="Menu & Profile Drawer">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+
+                <div onclick="showMainView('home')" class="bg-gradient-to-br from-goldChampagne to-goldRich text-emeraldDeep font-serif font-extrabold w-12 h-12 rounded-2xl text-xl shadow-gold-glow flex items-center justify-center border border-white/30 shrink-0 cursor-pointer">
+                    EE
+                </div>
+                <div onclick="showMainView('home')" class="cursor-pointer">
+                    <div class="flex items-center gap-2.5">
+                        <h1 class="text-xl sm:text-2xl font-serif font-bold tracking-tight leading-none text-sanctuaryBg">ElderEase</h1>
+                        <span class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-goldChampagne/20 text-goldChampagne border border-goldChampagne/30">
+                            ✦ Senior Sanctuary
+                        </span>
+                    </div>
+                    <span class="text-xs sm:text-sm font-medium text-goldChampagne block mt-0.5">Senior Companion & Navigation Helper • ज्येष्ठ नागरिक डिजिटल सोबती</span>
+                </div>
+            </div>
+
+            <!-- Quick Accessibility, Emergency & Google Login Bar -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <a href="tel:112" class="hidden md:inline-flex items-center gap-2 bg-red-700/90 hover:bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl border border-red-400/30 shadow-sm active:scale-95">
+                    <span>🚨</span> <span>SOS 112</span>
+                </a>
+                <button onclick="openAllTabsToggle()" id="expand-all-btn" class="hidden sm:inline-flex bg-emeraldRich hover:bg-emeraldDeep border border-goldChampagne/40 text-sanctuaryBg text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-xl shadow-sm active:scale-95 items-center gap-1.5" title="Expand or Collapse All Sections">
+                    <span>⊞</span> <span id="expand-all-label">Expand All</span>
+                </button>
+                <button onclick="toggleTextSize()" id="size-btn" class="bg-goldChampagne hover:bg-goldRich text-emeraldDeep text-xs sm:text-sm font-extrabold px-4 py-2.5 rounded-xl shadow-gold-glow active:scale-95 flex items-center gap-2 border border-white/40">
+                    <span>🔍</span> <span id="size-label">Large Text</span>
+                </button>
+
+                <!-- Dynamic Google Login / User Profile Chip -->
+                <button id="header-auth-btn" onclick="handleHeaderAuthClick()" class="bg-white hover:bg-goldLight text-emeraldDeep text-xs sm:text-sm font-extrabold px-3.5 py-2 rounded-xl shadow-md active:scale-95 flex items-center gap-2 border border-sky-200 cursor-pointer">
+                    <img id="header-user-avatar" src="" alt="" class="w-6 h-6 rounded-full hidden object-cover border border-sky-500">
+                    <svg id="header-google-icon" class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                        <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+                        <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+                        <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
+                        <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21.4 7.4 24 12 24z"/>
+                    </svg>
+                    <span id="header-auth-label">Login</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SLIDE-OUT NAVIGATION DRAWER -->
+    <div id="drawer-backdrop" onclick="closeDrawer()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 hidden opacity-0 transition-opacity"></div>
+    <aside id="nav-drawer" class="fixed top-0 left-0 h-full w-80 sm:w-96 max-w-[90vw] bg-white dark:bg-slate-900 z-50 shadow-2xl border-r-2 border-sanctuaryBorder transform -translate-x-full transition-transform duration-300 flex flex-col justify-between overflow-y-auto">
+        <div>
+            <div class="p-5 bg-gradient-to-r from-[#0284C7] to-[#0369A1] text-white flex items-center justify-between border-b-2 border-sky-300">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white text-[#0369A1] font-serif font-black flex items-center justify-center text-lg shadow">
+                        EE
+                    </div>
+                    <div>
+                        <p class="font-extrabold text-base leading-none">Concierge Menu</p>
+                        <p class="text-xs text-sky-100 mt-0.5">नेव्हिगेशन ड्रॉवर</p>
+                    </div>
+                </div>
+                <button onclick="closeDrawer()" class="w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 text-white font-black flex items-center justify-center text-sm cursor-pointer">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Active User Summary Banner -->
+            <div class="p-5 bg-sanctuarySurface/70 border-b border-sanctuaryBorder">
+                <div id="drawer-logged-out" class="space-y-3">
+                    <p class="text-xs font-bold text-charcoalMuted">Sign in with Google to auto-fill your details and save booking history.</p>
+                    <button onclick="openGoogleLoginModal()" class="w-full bg-white hover:bg-sky-50 text-charcoalInk font-extrabold py-3 px-4 rounded-xl border-2 border-sky-300 shadow-sm flex items-center justify-center gap-2.5 text-sm cursor-pointer">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24">
+                            <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+                            <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+                            <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
+                            <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21.4 7.4 24 12 24z"/>
+                        </svg>
+                        <span>Continue with Google</span>
+                    </button>
+                </div>
+
+                <div id="drawer-logged-in" class="hidden space-y-3">
+                    <div class="flex items-center gap-3.5">
+                        <img id="drawer-user-avatar" src="" alt="Avatar" class="w-14 h-14 rounded-2xl border-2 border-sky-600 shadow object-cover">
+                        <div class="min-w-0">
+                            <span class="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-300">Verified Member</span>
+                            <p id="drawer-user-name" class="font-extrabold text-base text-charcoalInk truncate mt-0.5"></p>
+                            <p id="drawer-user-email" class="text-xs text-charcoalMuted truncate"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1. FIRST ITEM IN DRAWER: EDIT PROFILE -->
+            <div class="p-4 border-b border-sanctuaryBorder bg-white">
+                <button onclick="toggleDrawerProfileEditor()" class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-sky-50 hover:bg-sky-100 border-2 border-sky-200 text-left transition cursor-pointer">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-[#0369A1] text-white flex items-center justify-center text-lg shadow">👤</span>
+                        <div>
+                            <p class="font-extrabold text-sm text-[#0F2A3D]">1. Edit Profile / प्रोफाईल</p>
+                            <p class="text-[11px] text-[#44607A] font-semibold">Update Name, Mobile & Age</p>
+                        </div>
+                    </div>
+                    <span id="drawer-profile-arrow" class="text-xs font-black text-[#0369A1]">▼</span>
+                </button>
+
+                <div id="drawer-profile-form" class="hidden mt-3 p-3.5 rounded-2xl bg-sanctuaryBg border border-sanctuaryBorder space-y-2.5">
+                    <div>
+                        <label class="block text-[11px] font-extrabold text-emeraldDeep mb-1">Full Name / पूर्ण नाव</label>
+                        <input id="prof-name" type="text" placeholder="Your Full Name" class="w-full p-2.5 text-xs font-bold rounded-xl border border-sanctuaryBorder">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-extrabold text-emeraldDeep mb-1">Phone / मोबाईल</label>
+                            <input id="prof-phone" type="tel" placeholder="Mobile No" class="w-full p-2.5 text-xs font-bold rounded-xl border border-sanctuaryBorder">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-extrabold text-emeraldDeep mb-1">Age / वय</label>
+                            <input id="prof-age" type="number" placeholder="Age" class="w-full p-2.5 text-xs font-bold rounded-xl border border-sanctuaryBorder">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-extrabold text-emeraldDeep mb-1">City / Address / पत्ता</label>
+                        <input id="prof-address" type="text" placeholder="Address" class="w-full p-2.5 text-xs font-bold rounded-xl border border-sanctuaryBorder">
+                    </div>
+                    <button onclick="saveUserProfile()" class="w-full bg-[#0369A1] hover:bg-[#075985] text-white font-extrabold py-2.5 rounded-xl text-xs shadow cursor-pointer">
+                        ✓ Save Profile & Auto-Fill Forms
+                    </button>
+                </div>
+            </div>
+
+            <!-- NAVIGATION ITEMS -->
+            <nav class="p-4 space-y-2.5">
+                <button onclick="showMainView('home'); closeDrawer();" class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-white hover:bg-sanctuarySurface border border-sanctuaryBorder text-left transition cursor-pointer">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-sky-100 text-sky-800 flex items-center justify-center text-lg">🏠</span>
+                        <div>
+                            <p class="font-extrabold text-sm text-charcoalInk">Home Directory / मुख्य पृष्ठ</p>
+                            <p class="text-[11px] text-charcoalMuted">All 7 Senior Citizen Services</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-sky-700">➔</span>
+                </button>
+
+                <button onclick="openHistoryView()" class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-white hover:bg-sanctuarySurface border border-sanctuaryBorder text-left transition cursor-pointer">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center text-lg">📜</span>
+                        <div>
+                            <p class="font-extrabold text-sm text-charcoalInk">2. My Booking History / इतिहास</p>
+                            <p class="text-[11px] text-charcoalMuted">View Appointments & Receipts</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-sky-700">➔</span>
+                </button>
+
+                <button onclick="openSettingsView()" class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-white hover:bg-sanctuarySurface border border-sanctuaryBorder text-left transition cursor-pointer">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-purple-100 text-purple-900 flex items-center justify-center text-lg">⚙️</span>
+                        <div>
+                            <p class="font-extrabold text-sm text-charcoalInk">3. Settings / सेटिंग्ज</p>
+                            <p class="text-[11px] text-charcoalMuted">Dark Mode, Font Size & Voice</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-sky-700">➔</span>
+                </button>
+
+                <button onclick="openDeveloperView()" class="w-full flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-slate-900 to-sky-950 hover:from-slate-800 hover:to-sky-900 text-white border border-amber-400/50 text-left shadow-md transition cursor-pointer">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-300/40 text-amber-300 flex items-center justify-center text-lg">🗝️</span>
+                        <div>
+                            <p class="font-extrabold text-sm text-amber-200">4. Developer Console</p>
+                            <p class="text-[11px] text-sky-200">Password-Locked Royal Admin</p>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold bg-amber-400 text-slate-950 px-2 py-0.5 rounded-md">LOCKED</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- BOTTOM OF NAVIGATION BAR: LOGIN / LOGOUT BUTTON -->
+        <div class="p-4 border-t-2 border-sanctuaryBorder bg-sanctuarySurface/60">
+            <button id="drawer-bottom-auth-btn" onclick="handleBottomAuthAction()" class="w-full py-3.5 px-4 rounded-2xl font-extrabold text-sm shadow flex items-center justify-center gap-2 transition cursor-pointer bg-[#0369A1] text-white">
+                <span id="drawer-bottom-auth-icon">🔐</span>
+                <span id="drawer-bottom-auth-text">Sign In with Google</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- GOOGLE LOGIN MODAL -->
+    <div id="google-auth-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] max-w-md w-full p-6 sm:p-7 border-2 border-sky-200 shadow-2xl space-y-5 animate-[royalReveal_0.28s_ease-out]">
+            <div class="flex justify-between items-start">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-200 flex items-center justify-center">
+                        <svg class="w-7 h-7" viewBox="0 0 24 24">
+                            <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+                            <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+                            <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
+                            <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21.4 7.4 24 12 24z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-sky-700">Google Verified Access</span>
+                        <h3 class="text-xl font-extrabold text-charcoalInk">Sign in with Google</h3>
+                    </div>
+                </div>
+                <button onclick="closeGoogleLoginModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">✕</button>
+            </div>
+
+            <p id="auth-modal-reason" class="text-xs sm:text-sm text-charcoalMuted font-semibold bg-sky-50 border border-sky-200 p-3.5 rounded-2xl">
+                Select an account or enter your Google details below. Your Name & Profile will automatically fill into all booking forms!
+            </p>
+
+            <div class="space-y-2">
+                <p class="text-xs font-extrabold uppercase tracking-wider text-charcoalMuted">Quick Choose Google Account:</p>
+                <button onclick="completeGoogleSignIn('ramesh.deshmukh@gmail.com', 'Rameshwar Deshmukh', '9823011223', '68')" class="w-full p-3 rounded-2xl border-2 border-sanctuaryBorder hover:border-sky-600 hover:bg-sky-50/60 flex items-center gap-3 text-left transition cursor-pointer">
+                    <img src="https://ui-avatars.com/api/?name=Rameshwar+Deshmukh&background=0369A1&color=fff&bold=true" class="w-10 h-10 rounded-full" alt="">
+                    <div class="min-w-0 flex-1">
+                        <p class="font-extrabold text-sm text-charcoalInk truncate">Rameshwar Deshmukh</p>
+                        <p class="text-xs text-charcoalMuted truncate">ramesh.deshmukh@gmail.com</p>
+                    </div>
+                    <span class="text-xs font-bold text-sky-700">Select ➔</span>
+                </button>
+                <button onclick="completeGoogleSignIn('sunita.kulkarni@gmail.com', 'Sunita Kulkarni', '9422099887', '71')" class="w-full p-3 rounded-2xl border-2 border-sanctuaryBorder hover:border-sky-600 hover:bg-sky-50/60 flex items-center gap-3 text-left transition cursor-pointer">
+                    <img src="https://ui-avatars.com/api/?name=Sunita+Kulkarni&background=0284C7&color=fff&bold=true" class="w-10 h-10 rounded-full" alt="">
+                    <div class="min-w-0 flex-1">
+                        <p class="font-extrabold text-sm text-charcoalInk truncate">Sunita Kulkarni</p>
+                        <p class="text-xs text-charcoalMuted truncate">sunita.kulkarni@gmail.com</p>
+                    </div>
+                    <span class="text-xs font-bold text-sky-700">Select ➔</span>
+                </button>
+            </div>
+
+            <div class="pt-3 border-t border-sanctuaryBorder space-y-2.5">
+                <p class="text-xs font-extrabold uppercase tracking-wider text-charcoalMuted">Or Use Your Own Google Account:</p>
+                <input id="g-custom-name" type="text" placeholder="Your Full Name *" class="w-full p-3 rounded-xl border border-sanctuaryBorder text-sm font-semibold">
+                <input id="g-custom-email" type="email" placeholder="Your Gmail (e.g. name@gmail.com) *" class="w-full p-3 rounded-xl border border-sanctuaryBorder text-sm font-semibold">
+                <div class="grid grid-cols-2 gap-2">
+                    <input id="g-custom-phone" type="tel" placeholder="Mobile Number" class="w-full p-3 rounded-xl border border-sanctuaryBorder text-sm font-semibold">
+                    <input id="g-custom-age" type="number" placeholder="Age (e.g. 66)" class="w-full p-3 rounded-xl border border-sanctuaryBorder text-sm font-semibold">
+                </div>
+                <button onclick="submitCustomGoogleLogin()" class="w-full bg-[#0369A1] hover:bg-[#075985] text-white font-extrabold py-3.5 rounded-2xl shadow-md text-sm flex items-center justify-center gap-2 cursor-pointer">
+                    <span>✓ Continue with Google Account</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN FLUID CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10 w-full flex-grow space-y-8">
+
+        <!-- VIEW 1: ORIGINAL HOME PAGE -->
+        <div id="view-home" class="space-y-8">
+
+            <!-- ROYAL SANCTUARY WELCOME BANNER -->
+            <section class="bg-gradient-to-br from-emeraldDeep via-emeraldRich to-[#0C4A6E] hero-pattern text-sanctuaryBg p-6 sm:p-8 lg:p-10 rounded-[2rem] shadow-royal-lg border border-goldChampagne/35 relative overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+                    <div class="lg:col-span-7 xl:col-span-8 space-y-3">
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <span class="bg-goldChampagne text-emeraldDeep text-xs font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full shadow-sm">
+                                SDG 10: Reduced Inequalities
+                            </span>
+                            <span class="text-xs sm:text-sm bg-white/10 backdrop-blur-sm text-goldLight px-3.5 py-1 rounded-full font-semibold border border-white/15 flex items-center gap-1.5">
+                                <span>📍</span> Chhatrapati Sambhajinagar
+                            </span>
+                        </div>
+
+                        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold tracking-tight text-white pt-1">
+                            Namaste! नमस्कार! 🙏 <span id="hero-user-greeting" class="text-amber-300"></span>
+                        </h2>
+                        <p class="text-[#E0F2FE] text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl font-medium">
+                            Easy digital guide for seniors. ज्येष्ठांसाठी सोपी डिजिटल मदत व नेव्हिगेशन. Designed for effortless clarity, voice-guided assistance, and dignified independence.
+                        </p>
+                    </div>
+
+                    <div class="lg:col-span-5 xl:col-span-4">
+                        <div class="bg-white/10 backdrop-blur-md border border-goldChampagne/30 p-4 sm:p-5 rounded-3xl space-y-3 shadow-inner">
+                            <div class="flex items-center justify-between text-xs text-goldLight font-semibold">
+                                <span>🎙️ Voice Concierge Ready</span>
+                                <span class="px-2 py-0.5 rounded-md bg-sky-500/20 text-sky-200 border border-sky-400/30">English & मराठी</span>
+                            </div>
+                            <button onclick="speakWelcomeMessage()" class="bg-gradient-to-r from-goldChampagne to-goldRich hover:from-goldRich hover:to-goldChampagne text-emeraldDeep font-extrabold px-5 py-4 rounded-2xl shadow-gold-glow flex items-center gap-3 text-sm sm:text-base w-full justify-center active:scale-98 transition-all cursor-pointer">
+                                <span class="text-2xl bg-emeraldDeep/10 w-10 h-10 rounded-xl flex items-center justify-center">🔊</span>
+                                <div class="text-left">
+                                    <span class="block leading-tight">Listen Audio Guide</span>
+                                    <span class="block text-xs font-bold opacity-85">माहिती ऐका / आवाज</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SERVICE HUB HEADER & QUICK JUMP PILLS -->
+            <section class="space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-sanctuaryBorder pb-4">
+                    <div>
+                        <span class="text-xs font-extrabold uppercase tracking-widest text-emeraldDeep/70 block mb-1">Concierge Directory • सेवा निर्देशिका</span>
+                        <h3 class="text-xl sm:text-2xl font-serif font-bold text-emeraldDeep border-l-4 border-goldRich pl-3">
+                            Select Service / सेवा निवडा
+                        </h3>
+                    </div>
+                    <span class="text-xs sm:text-sm text-charcoalMuted font-bold flex items-center gap-1.5">
+                        <span>Tap any card below to open</span>
+                        <span class="text-goldRich">▼</span>
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar" aria-label="Quick Service Jump">
+                    <button onclick="jumpToService('tab-hospitals')" class="shrink-0 px-3.5 py-2 rounded-xl bg-white hover:bg-emeraldDeep hover:text-white border border-sanctuaryBorder text-xs sm:text-sm font-bold text-charcoalInk shadow-sm flex items-center gap-2">
+                        <span>🏥</span> <span>1. Hospitals</span>
+                    </button>
+                    <button onclick="jumpToService('tab-forms')" class="shrink-0 px-3.5 py-2 rounded-xl bg-white hover:bg-emeraldDeep hover:text-white border border-sanctuaryBorder text-xs sm:text-sm font-bold text-charcoalInk shadow-sm flex items-center gap-2">
+                        <span>📝</span> <span>2. Govt Forms</span>
+                    </button>
+                    <button onclick="jumpToService('tab-emergency')" class="shrink-0 px-3.5 py-2 rounded-xl bg-red-50 hover:bg-red-700 hover:text-white border border-red-200 text-xs sm:text-sm font-bold text-red-900 shadow-sm flex items-center gap-2">
+                        <span>🚨</span> <span>3. Emergency</span>
+                    </button>
+                    <button onclick="jumpToService('tab-transport')" class="shrink-0 px-3.5 py-2 rounded-xl bg-white hover:bg-emeraldDeep hover:text-white border border-sanctuaryBorder text-xs sm:text-sm font-bold text-charcoalInk shadow-sm flex items-center gap-2">
+                        <span>🚌</span> <span>4. Transport</span>
+                    </button>
+                    <button onclick="jumpToService('tab-stores')" class="shrink-0 px-3.5 py-2 rounded-xl bg-white hover:bg-emeraldDeep hover:text-white border border-sanctuaryBorder text-xs sm:text-sm font-bold text-charcoalInk shadow-sm flex items-center gap-2">
+                        <span>🛒</span> <span>5. Stores</span>
+                    </button>
+                    <button onclick="jumpToService('tab-navigator')" class="shrink-0 px-3.5 py-2 rounded-xl bg-goldLight hover:bg-emeraldDeep hover:text-white border border-goldChampagne text-xs sm:text-sm font-bold text-emeraldDeep shadow-sm flex items-center gap-2">
+                        <span>🗺️</span> <span>6. Live Navigator</span>
+                    </button>
+                    <button onclick="jumpToService('tab-volunteer')" class="shrink-0 px-3.5 py-2 rounded-xl bg-white hover:bg-emeraldDeep hover:text-white border border-sanctuaryBorder text-xs sm:text-sm font-bold text-charcoalInk shadow-sm flex items-center gap-2">
+                        <span>🤝</span> <span>7. Volunteers</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ADAPTIVE MULTI-RATIO SERVICE TABS GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
+
+                <!-- TAB 1: Hospitals & Medical Stores -->
+                <div id="card-tab-hospitals" class="service-card lg:col-span-7 bg-white rounded-[1.75rem] border-2 border-sanctuaryBorder shadow-royal overflow-hidden">
+                    <button onclick="toggleTab('tab-hospitals')" class="w-full p-5 sm:p-6 text-left font-extrabold text-charcoalInk flex justify-between items-center bg-gradient-to-r from-sanctuarySurface/80 to-white hover:from-emeraldSoft/60 hover:to-white transition cursor-pointer">
+                        <span class="flex items-center gap-4 text-charcoalInk text-base sm:text-lg pointer-events-none">
+                            <span class="w-12 h-12 sm:w-14 sm:h-14 bg-emeraldDeep text-goldChampagne rounded-2xl flex items-center justify-center text-2xl shadow-md shrink-0 border border-goldChampagne/30"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="8" y="14" width="32" height="26" rx="5" fill="#fff" stroke="#0284C7" stroke-width="2.5"/><rect x="13" y="19" width="5" height="5" rx="1.5" fill="#BAE6FD"/><rect x="30" y="19" width="5" height="5" rx="1.5" fill="#BAE6FD"/><rect x="20" y="31" width="8" height="9" rx="2" fill="#0284C7"/><path d="M24 7v7M20.5 10.5h7" stroke="#0284C7" stroke-width="2.5" stroke-linecap="round"/><g class="a-pulse"><circle cx="24" cy="26" r="0" fill="none"/><path d="M24 21.5v8M20 25.5h8" stroke="#E0485A" stroke-width="3" stroke-linecap="round"/></g></svg></span>
+                            <div>
+                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-emeraldDeep/70 block">Healthcare & Clinical Care</span>
+                                <span class="font-serif font-bold text-emeraldDeep block">1. Hospitals & Medical (दवाखाने आणि औषधे)</span>
+                            </div>
+                        </span>
+                        <span id="arrow-tab-hospitals" class="w-9 h-9 rounded-full bg-sanctuarySurface text-emeraldDeep flex items-center justify-center font-black text-sm transition-transform pointer-events-none shrink-0 border border-sanctuaryBorder">▼</span>
+                    </button>
+
+                    <div id="tab-hospitals" class="hidden p-5 sm:p-6 bg-sanctuaryBg border-t-2 border-sanctuaryBorder space-y-5">
+                        <p class="text-xs sm:text-sm text-charcoalInk font-bold">Find direct route from your Live Location (थेट रस्ता शोधा):</p>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <button onclick="openGoogleMaps('Hospitals near me')" class="w-full text-left p-4 bg-white hover:bg-emeraldSoft/50 border-2 border-sanctuaryBorder hover:border-emeraldDeep rounded-2xl flex justify-between items-center active:scale-98 shadow-sm group">
+                                <div class="flex items-center gap-3.5">
+                                    <span class="ee-sub text-2xl bg-sanctuarySurface w-11 h-11 rounded-xl flex items-center justify-center"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><ellipse class="a-ping" cx="24" cy="41" rx="8" ry="2.6" fill="none" stroke="#0E7490" stroke-width="2"/><g class="a-bob"><path d="M24 4c-7.2 0-12.5 5.3-12.5 12 0 9 12.5 24 12.5 24S36.5 25 36.5 16C36.5 9.3 31.2 4 24 4z" fill="#0E7490"/><circle cx="24" cy="16" r="5" fill="#fff"/></g></svg></span>
+                                    <div>
+                                        <p class="font-extrabold text-sm sm:text-base text-emeraldDeep">Nearby Hospital / नजीकचे रुग्णालय</p>
+                                        <p class="text-xs text-charcoalMuted font-medium">Open Google Maps Route</p>
+                                    </div>
+                                </div>
+                                <span class="bg-emeraldDeep group-hover:bg-goldRich group-hover:text-emeraldDeep text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow shrink-0">Map ➔</span>
+                            </button>
+
+                            <button onclick="openGoogleMaps('Medical stores near me')" class="w-full text-left p-4 bg-white hover:bg-emeraldSoft/50 border-2 border-sanctuaryBorder hover:border-emeraldDeep rounded-2xl flex justify-between items-center active:scale-98 shadow-sm group">
+                                <div class="flex items-center gap-3.5">
+                                    <span class="ee-sub text-2xl bg-sanctuarySurface w-11 h-11 rounded-xl flex items-center justify-center"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g class="a-sway"><g transform="rotate(-35 24 24)"><rect x="7" y="16" width="34" height="16" rx="8" fill="#fff" stroke="#0284C7" stroke-width="2.5"/><path d="M24 16h9a8 8 0 0 1 0 16h-9z" fill="#0284C7"/></g></g></svg></span>
+                                    <div>
+                                        <p class="font-extrabold text-sm sm:text-base text-emeraldDeep">Medical Store / औषध दुकान</p>
+                                        <p class="text-xs text-charcoalMuted font-medium">Nearest medicine stores</p>
+                                    </div>
+                                </div>
+                                <span class="bg-emeraldDeep group-hover:bg-goldRich group-hover:text-emeraldDeep text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow shrink-0">Map ➔</span>
+                            </button>
+                        </div>
+
+                        <button onclick="speakText('To book a hospital appointment, contact your nearest primary health center or local hospital directly. दवाखान्यात नंबर लावण्यासाठी जवळच्या शासकीय रुग्णालयात संपर्क साधा.')" class="w-full text-left p-4 bg-goldLight/70 hover:bg-goldLight border-2 border-goldChampagne rounded-2xl text-xs sm:text-sm text-emeraldDeep font-extrabold flex items-center justify-between active:scale-98 shadow-sm">
+                            <span class="flex items-center gap-2.5">
+                                <span class="text-lg">🔊</span>
+                                <span>Listen Appointment Tips (माहिती ऐका)</span>
+                            </span>
+                            <span class="bg-emeraldDeep text-goldChampagne px-3 py-1 rounded-lg font-black text-xs">Play Audio</span>
+                        </button>
+
+                        <!-- BOOK APPOINTMENT SECTION -->
+                        <section class="mt-4 p-5 sm:p-6 rounded-3xl border-2 border-goldChampagne bg-white shadow-royal space-y-4" id="appointment-section">
+                            <div class="border-b border-sanctuaryBorder pb-3 flex flex-wrap items-center justify-between gap-2">
+                                <div>
+                                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-goldRich">Priority Slip Desk</span>
+                                    <h3 class="text-lg sm:text-xl font-serif font-bold text-emeraldDeep mt-0.5">📅 Book Your Appointment / अपॉइंटमेंट बुक करा</h3>
+                                </div>
+                                <span id="appt-auth-badge" class="text-[11px] font-extrabold px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                                    🔐 Login required to book
+                                </span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-charcoalMuted leading-relaxed">
+                                Choose a hospital in Chhatrapati Sambhajinagar and fill in the details. This creates a printable appointment request slip; it does not confirm a hospital booking. Please call the hospital to confirm.
+                            </p>
+
+                            <div class="space-y-3.5">
+                                <div>
+                                    <label for="appt-hospital" class="block text-xs sm:text-sm font-extrabold text-emeraldDeep mb-1.5">Hospital / रुग्णालय निवडा</label>
+                                    <select id="appt-hospital" class="w-full p-3.5 border-2 border-sanctuaryBorder focus:border-emeraldDeep rounded-xl text-sm font-semibold bg-sanctuaryBg text-charcoalInk outline-none">
+                                        <option value="Government Medical College & Hospital">Government Medical College & Hospital — University Road</option>
+                                        <option value="District Civil Hospital">District Civil Hospital — Chikalthana</option>
+                                        <option value="Medicover Hospitals">Medicover Hospitals — N-6 CIDCO</option>
+                                        <option value="MGM Medical College and Hospital">MGM Medical College and Hospital — N-6 CIDCO, Jalna Road</option>
+                                        <option value="Kamalnayan Bajaj Hospital">Kamalnayan Bajaj Hospital — Beed Bypass Road</option>
+                                        <option value="Seth Nandlal Dhoot Hospital">Seth Nandlal Dhoot Hospital — Airport Road, Chikalthana</option>
+                                        <option value="Dr. Hedgewar Hospital">Dr. Hedgewar Hospital — Garkheda, Jawahar Colony</option>
+                                        <option value="Apex Superspeciality Hospital">Apex Superspeciality Hospital — Jalna Road</option>
+                                        <option value="JJ Plus Hospitals">JJ Plus Hospitals — Opp. District Court, Jalna Road</option>
+                                        <option value="United CIIGMA Hospital">United CIIGMA Hospital — Shahnoorwadi, Dargah Road</option>
+                                        <option value="Government Cancer Hospital">Government Cancer Hospital — Naralibag</option>
+                                        <option value="MIT Hospital and Research Institute">MIT Hospital and Research Institute — N-4 CIDCO</option>
+                                        <option value="Manik Hospital and Research Centre">Manik Hospital and Research Centre — Garkheda</option>
+                                        <option value="Life Multispeciality Hospital">Life Multispeciality Hospital — N-2 CIDCO, Jalna Road</option>
+                                        <option value="AIMS Hospital">AIMS Hospital — N-11 CIDCO, Jalgaon Road</option>
+                                        <option value="Other / Search nearby hospital">Other / Search nearby hospital</option>
+                                    </select>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div class="sm:col-span-2">
+                                        <input id="appt-name" type="text" autocomplete="name" placeholder="Patient full name / रुग्णाचे नाव *" class="w-full p-3.5 border-2 border-sanctuaryBorder focus:border-emeraldDeep rounded-xl text-sm font-semibold bg-sanctuaryBg text-charcoalInk outline-none" required>
+                                    </div>
+                                    <input id="appt-age" type="number" min="0" max="120" placeholder="Age / वय" class="w-full p-3.5 border-2 border-sanctuaryBorder focus:border-emeraldDeep rounded-xl text-sm font-semibold bg-sanctuaryBg text-charcoalInk outline-none">
+                                    <input id="appt-phone" type="tel" inputmode="numeric" placeholder="Mobile number / मोबाईल नंबर *" class="w-full p-3.5 border-2 border-sanctuaryBorder focus:border-emeraldDeep rounded-xl text-sm font-semibold bg-sanctuaryBg text-charcoalInk outline-none" required>
+                                    <div class="sm:col-span-2">
+                                        <input id="appt-dept" type="text" placeholder="Department / Doctor (e.g. General Medicine, Cardiology)" class="w-full p-3.5 border-2 border-sanctuaryBorder focus:border-emeraldDeep rounded-xl text-sm font-semibold bg-sanctuaryBg text-charcoalInk outline-none">
+                                    </div>
+                                    <input id="appt-date" type="date" class="w-full p-3.5 border-2 border-sanctuaryBorder focus:border-emeraldDeep rounded-xl text-sm font-semibold bg-sanctuaryBg text-charcoalInk outline-none" required>
+                                    <select id="appt-time" class="w-full p-3.5 border-2 border-sanctuaryBorder focus:border-emeraldDeep rounded-xl text-sm font-semibold bg-sanctuaryBg text-charcoalInk outline-none">
+                                        <option value="Morning">Morning (सकाळ)</option>
+                                        <option value="Afternoon">Afternoon (दुपार)</option>
+                                        <option value="Evening">Evening (संध्याकाळ)</option>
+                                    </select>
+                                    <div class="sm:col-span-2">
+                                        <textarea id="appt-reason" rows="2" placeholder="Reason for visit / त्रासाचे कारण (optional)" class="w-full p-3.5 border-2 border-sanctuaryBorder focus:border-emeraldDeep rounded-xl text-sm font-semibold bg-sanctuaryBg text-charcoalInk outline-none"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="createAppointment()" class="w-full bg-emeraldDeep hover:bg-emeraldRich text-white font-extrabold p-4 rounded-2xl shadow-md active:scale-98 text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer">
+                                <span>✓</span> <span>Create Appointment Slip / अपॉइंटमेंट स्लिप तयार करा</span>
+                            </button>
+
+                            <div id="appt-result" class="hidden p-4 rounded-2xl border-2 border-sky-400 bg-sky-50/90 space-y-3">
+                                <p class="font-extrabold text-sky-950 text-sm flex items-center gap-2">
+                                    <span>✅</span> <span>Appointment request created</span>
+                                </p>
+                                <p id="appt-result-text" class="text-xs sm:text-sm font-bold text-sky-900 bg-white/80 p-3 rounded-xl border border-sky-200"></p>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                    <button onclick="printLatestAppointment()" class="w-full bg-sky-800 hover:bg-sky-900 text-white font-extrabold p-3.5 rounded-xl text-xs sm:text-sm shadow">
+                                        🖨️ Print Appointment
+                                    </button>
+                                    <button onclick="openSelectedHospitalBooking()" class="w-full bg-white hover:bg-sanctuarySurface border-2 border-sky-700 text-emeraldDeep font-extrabold p-3.5 rounded-xl text-xs sm:text-sm">
+                                        🌐 Open Hospital Website / Booking Search
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t-2 border-sanctuaryBorder space-y-3">
+                                <div class="flex items-center justify-between gap-2">
+                                    <h4 class="font-serif font-bold text-emeraldDeep text-base">All Appointment Slips</h4>
+                                    <button onclick="printAllAppointments()" class="text-xs bg-emeraldDeep hover:bg-emeraldRich text-goldChampagne px-3.5 py-2 rounded-xl font-extrabold shadow-sm">
+                                        🖨️ Print All
+                                    </button>
+                                </div>
+                                <p class="text-xs text-charcoalMuted">Appointments created appear here and in your Drawer History.</p>
+                                <div id="appt-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <p class="text-xs text-charcoalMuted">No appointment slips created yet.</p>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- RIGHT/SECONDARY COLUMN GROUP -->
+                <div class="lg:col-span-5 space-y-5 sm:space-y-6">
+
+                    <!-- TAB 3: Emergency Assistance Panel -->
+                    <div id="card-tab-emergency" class="service-card bg-white rounded-[1.75rem] border-2 border-red-300 shadow-royal overflow-hidden">
+                        <button onclick="toggleTab('tab-emergency')" class="w-full p-5 sm:p-6 text-left font-extrabold text-charcoalInk flex justify-between items-center bg-gradient-to-r from-red-50 via-red-50/60 to-white hover:from-red-100/80 transition cursor-pointer">
+                            <span class="flex items-center gap-4 text-red-950 text-base sm:text-lg pointer-events-none">
+                                <span class="w-12 h-12 sm:w-14 sm:h-14 bg-red-700 text-white rounded-2xl flex items-center justify-center text-2xl shadow-md shrink-0"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="3" y="19" width="30" height="17" rx="4" fill="#fff" stroke="#C62828" stroke-width="2.5"/><path d="M33 25h6.5l5 6v5H33z" fill="#fff" stroke="#C62828" stroke-width="2.5" stroke-linejoin="round"/><path d="M36 27.5h3l2.5 3H36z" fill="#BAE6FD"/><path d="M18 24.5v8M14 28.5h8" stroke="#C62828" stroke-width="3" stroke-linecap="round"/><g class="a-blink"><rect x="11" y="13.5" width="9" height="5" rx="2.5" fill="#C62828"/><path d="M8 12l-2-2M23 12l2-2M15.5 10V7" stroke="#F59E9E" stroke-width="2" stroke-linecap="round"/></g><circle cx="12" cy="37" r="4.2" fill="#0F2A3D"/><circle cx="12" cy="37" r="1.5" fill="#fff"/><circle cx="38" cy="37" r="4.2" fill="#0F2A3D"/><circle cx="38" cy="37" r="1.5" fill="#fff"/></svg></span>
+                                <div>
+                                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-red-700 block">24/7 Priority Response</span>
+                                    <span class="font-serif font-bold text-red-950 block">3. Emergency Helpline (तातडीची मदत)</span>
+                                </div>
+                            </span>
+                            <span id="arrow-tab-emergency" class="w-9 h-9 rounded-full bg-red-100 text-red-800 flex items-center justify-center font-black text-sm transition-transform pointer-events-none shrink-0 border border-red-200">▼</span>
+                        </button>
+                        <div id="tab-emergency" class="hidden p-5 sm:p-6 bg-sanctuaryBg border-t-2 border-red-200 space-y-4">
+                            <div class="bg-red-50/90 border-2 border-red-200 p-4 sm:p-5 rounded-2xl space-y-3">
+                                <p class="font-extrabold text-xs sm:text-sm text-red-950">Tap below for instant emergency calling (तात्काळ कॉल करा):</p>
+                                <div class="grid grid-cols-1 gap-3">
+                                    <a href="tel:112" class="w-full bg-red-700 hover:bg-red-800 active:scale-98 text-white font-extrabold p-4 rounded-2xl shadow-md flex items-center justify-center gap-3 text-sm sm:text-base transition">
+                                        <span class="text-xl">🚑</span> <span>Call Ambulance / Police (112)</span>
+                                    </a>
+                                    <a href="tel:1091" class="w-full bg-emeraldDeep hover:bg-emeraldRich active:scale-98 text-sanctuaryBg font-extrabold p-4 rounded-2xl shadow-md flex items-center justify-center gap-3 text-xs sm:text-sm transition">
+                                        <span class="text-lg">📞</span> <span>Elder Helpline (1091 / 14567)</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: Government Online Forms Guide -->
+                    <div id="card-tab-forms" class="service-card bg-white rounded-[1.75rem] border-2 border-sanctuaryBorder shadow-royal overflow-hidden">
+                        <button onclick="toggleTab('tab-forms')" class="w-full p-5 sm:p-6 text-left font-extrabold text-charcoalInk flex justify-between items-center bg-gradient-to-r from-sanctuarySurface/80 to-white hover:from-emeraldSoft/60 hover:to-white transition cursor-pointer">
+                            <span class="flex items-center gap-4 text-charcoalInk text-base sm:text-lg pointer-events-none">
+                                <span class="w-12 h-12 sm:w-14 sm:h-14 bg-emeraldDeep text-goldChampagne rounded-2xl flex items-center justify-center text-2xl shadow-md shrink-0 border border-goldChampagne/30"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="10" y="6" width="25" height="33" rx="4" fill="#fff" stroke="#6D5BD0" stroke-width="2.5"/><path d="M16 15h13M16 21h13M16 27h8" stroke="#C9C1F7" stroke-width="2.5" stroke-linecap="round"/><g class="a-write"><path d="M27 37l11-11 4.5 4.5-11 11-6 1.5z" fill="#F5A623"/><path d="M38 26l2.2-2.2 4.5 4.5-2.2 2.2z" fill="#6D5BD0"/></g></svg></span>
+                                <div>
+                                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-emeraldDeep/70 block">Welfare & Pension Advisory</span>
+                                    <span class="font-serif font-bold text-emeraldDeep block">2. Online Forms (शासकीय अर्ज व पेन्शन योजना)</span>
+                                </div>
+                            </span>
+                            <span id="arrow-tab-forms" class="w-9 h-9 rounded-full bg-sanctuarySurface text-emeraldDeep flex items-center justify-center font-black text-sm transition-transform pointer-events-none shrink-0 border border-sanctuaryBorder">▼</span>
+                        </button>
+                        <div id="tab-forms" class="hidden p-5 sm:p-6 bg-sanctuaryBg border-t-2 border-sanctuaryBorder space-y-4">
+                            <p class="text-xs sm:text-sm text-charcoalInk font-bold">Key welfare schemes and required documents (योजना व कागदपत्रे):</p>
+                            
+                            <div class="p-4 bg-white border-2 border-sanctuaryBorder rounded-2xl space-y-2 shadow-sm">
+                                <div class="flex justify-between items-start gap-2">
+                                    <span class="font-serif font-bold text-sm sm:text-base text-emeraldDeep">1. Shravanbal Pension (श्रावण बाळ पेन्शन)</span>
+                                    <button onclick="speakText('Shravanbal Pension requires identity proof, income certificate below 65 thousand rupees, and bank passbook. यासाठी ओळखपत्र, उत्पन्नाचा दाखला आणि बँक पासबुक आवश्यक आहे.')" class="bg-emeraldDeep hover:bg-emeraldRich text-goldChampagne text-xs px-3 py-1.5 rounded-xl font-extrabold active:scale-95 shrink-0 shadow-sm">
+                                        🔊 Listen
+                                    </button>
+                                </div>
+                                <p class="text-xs sm:text-sm text-charcoalMuted leading-relaxed">
+                                    • Age limit: 65+ years.<br>
+                                    • Required Docs: Identity Card, Income Certificate, Bank Passbook.
+                                </p>
+                            </div>
+
+                            <div class="p-4 bg-white border-2 border-sanctuaryBorder rounded-2xl space-y-2 shadow-sm">
+                                <div class="flex justify-between items-start gap-2">
+                                    <span class="font-serif font-bold text-sm sm:text-base text-emeraldDeep">2. Senior Citizen Card (ओळखपत्र)</span>
+                                    <button onclick="speakText('Senior citizen card provides concession in ST bus travel. Age proof and passport photo required. एसटी बस प्रवासात सवलतीसाठी हे ओळखपत्र गरजेचे आहे.')" class="bg-emeraldDeep hover:bg-emeraldRich text-goldChampagne text-xs px-3 py-1.5 rounded-xl font-extrabold active:scale-95 shrink-0 shadow-sm">
+                                        🔊 Listen
+                                    </button>
+                                </div>
+                                <p class="text-xs sm:text-sm text-charcoalMuted leading-relaxed">
+                                    • Benefit: Concession in ST bus travel.<br>
+                                    • Required: Age proof & Passport photo.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 6: Live Address Navigator -->
+                    <div id="card-tab-navigator" class="service-card bg-white rounded-[1.75rem] border-2 border-goldChampagne shadow-royal overflow-hidden">
+                        <button onclick="toggleTab('tab-navigator')" class="w-full p-5 sm:p-6 text-left font-extrabold text-charcoalInk flex justify-between items-center bg-gradient-to-r from-goldLight/80 via-goldLight/40 to-white hover:from-goldLight transition cursor-pointer">
+                            <span class="flex items-center gap-4 text-charcoalInk text-base sm:text-lg pointer-events-none">
+                                <span class="w-12 h-12 sm:w-14 sm:h-14 bg-emeraldDeep text-goldChampagne rounded-2xl flex items-center justify-center text-2xl shadow-md shrink-0 border border-goldChampagne/40"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><ellipse class="a-ping" cx="24" cy="41" rx="8" ry="2.6" fill="none" stroke="#0E7490" stroke-width="2"/><g class="a-bob"><path d="M24 4c-7.2 0-12.5 5.3-12.5 12 0 9 12.5 24 12.5 24S36.5 25 36.5 16C36.5 9.3 31.2 4 24 4z" fill="#0E7490"/><circle cx="24" cy="16" r="5" fill="#fff"/></g></svg></span>
+                                <div>
+                                    <span class="text-[11px] font-extrabold uppercase tracking-wider text-goldRich block">GPS Turn-by-Turn Voice Guide</span>
+                                    <span class="font-serif font-bold text-emeraldDeep block">6. Live Address Navigator (पत्ता शोधा आणि नेव्हिगेट करा)</span>
+                                </div>
+                            </span>
+                            <span id="arrow-tab-navigator" class="w-9 h-9 rounded-full bg-goldLight text-emeraldDeep flex items-center justify-center font-black text-sm transition-transform pointer-events-none shrink-0 border border-goldChampagne">▼</span>
+                        </button>
+                        <div id="tab-navigator" class="hidden p-5 sm:p-6 bg-sanctuaryBg border-t-2 border-goldChampagne space-y-4">
+                            <p class="text-xs sm:text-sm text-charcoalInk font-bold leading-relaxed">
+                                Type any address, landmark, or destination below. The app will fetch your current GPS location and give turn-by-turn route instructions with voice audio!
+                                <br><span class="text-emeraldDeep/80 font-semibold block mt-1">कोणताही पत्ता किंवा ठिकाण टाईप करा, ॲप तुम्हाला थेट रस्ता आणि व्हॉइस नेव्हिगेशन देईल.</span>
+                            </p>
+
+                            <div class="space-y-3 pt-1">
+                                <div class="relative">
+                                    <input type="text" id="destination-input" placeholder="e.g. Kranti Chowk, Civil Hospital..." class="w-full p-4 pl-11 border-2 border-sanctuaryBorder rounded-2xl text-xs sm:text-sm font-bold focus:border-emeraldDeep outline-none bg-white text-charcoalInk shadow-sm">
+                                    <span class="absolute left-4 top-4 text-lg">📍</span>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                    <button onclick="startLiveNavigation()" class="w-full bg-emeraldDeep hover:bg-emeraldRich active:scale-98 text-goldChampagne font-extrabold p-4 rounded-2xl shadow-md text-xs sm:text-sm flex items-center justify-center gap-2 transition">
+                                        <span>🧭</span> <span>Start Navigator</span>
+                                    </button>
+                                    <button onclick="quickPresetDestinations()" class="w-full bg-white hover:bg-goldLight border-2 border-goldChampagne active:scale-98 text-emeraldDeep font-extrabold p-4 rounded-2xl shadow-sm text-xs sm:text-sm flex items-center justify-center gap-2 transition">
+                                        <span>⭐</span> <span>Quick Places</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="nav-instructions-box" class="hidden bg-white border-2 border-goldChampagne p-4 rounded-2xl space-y-3 mt-2 shadow-sm">
+                                <div class="flex justify-between items-center border-b border-sanctuaryBorder pb-2">
+                                    <span class="font-extrabold text-xs sm:text-sm text-emeraldDeep">🔊 Voice Navigation Guidance</span>
+                                    <span id="nav-status-badge" class="text-[11px] bg-sky-700 text-white px-2.5 py-0.5 rounded-full font-bold">Active</span>
+                                </div>
+                                <p id="nav-instruction-text" class="text-xs sm:text-sm font-bold text-charcoalInk leading-relaxed">
+                                    GPS signal acquired. Preparing voice directions...
+                                </p>
+                                <button onclick="repeatLastInstruction()" class="w-full bg-goldChampagne hover:bg-goldRich text-emeraldDeep font-extrabold py-3 rounded-xl text-xs sm:text-sm shadow">
+                                    🔊 Repeat Voice Instruction (सूचना पुन्हा ऐका)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- LOWER MULTI-COLUMN ROW FOR TRANSIT, STORES & VOLUNTEERS -->
+                <div class="lg:col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 items-start">
+
+                    <!-- TAB 4: Nearby Transport -->
+                    <div id="card-tab-transport" class="service-card bg-white rounded-[1.75rem] border-2 border-sanctuaryBorder shadow-royal overflow-hidden">
+                        <button onclick="toggleTab('tab-transport')" class="w-full p-5 sm:p-6 text-left font-extrabold text-charcoalInk flex justify-between items-center bg-gradient-to-r from-sanctuarySurface/80 to-white hover:from-emeraldSoft/60 hover:to-white transition cursor-pointer">
+                            <span class="flex items-center gap-3.5 text-charcoalInk text-base pointer-events-none">
+                                <span class="w-12 h-12 bg-emeraldDeep text-goldChampagne rounded-2xl flex items-center justify-center text-2xl shadow-md shrink-0 border border-goldChampagne/30"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g class="a-drift"><path d="M1 20h6M2 26h5M0 32h6" stroke="#F5C96B" stroke-width="2.2" stroke-linecap="round"/></g><g class="a-bob"><rect x="9" y="10" width="36" height="26" rx="7" fill="#F5A623"/><rect x="13" y="15" width="7.5" height="9" rx="2" fill="#fff"/><rect x="22.5" y="15" width="7.5" height="9" rx="2" fill="#fff"/><rect x="32" y="15" width="9" height="9" rx="2" fill="#fff"/><path d="M9 29h36" stroke="#C77D0A" stroke-width="2"/><circle cx="40.5" cy="32" r="1.6" fill="#FFF3C4"/><circle cx="18" cy="37" r="4.5" fill="#0F2A3D"/><circle cx="18" cy="37" r="1.7" fill="#fff"/><circle cx="36" cy="37" r="4.5" fill="#0F2A3D"/><circle cx="36" cy="37" r="1.7" fill="#fff"/></g></svg></span>
+                                <div>
+                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-emeraldDeep/70 block">Public Transit</span>
+                                    <span class="font-serif font-bold text-emeraldDeep block">4. Bus & Rickshaw Stands (बस आणि रिक्षा स्टँड)</span>
+                                </div>
+                            </span>
+                            <span id="arrow-tab-transport" class="w-8 h-8 rounded-full bg-sanctuarySurface text-emeraldDeep flex items-center justify-center font-black text-xs transition-transform pointer-events-none shrink-0 border border-sanctuaryBorder">▼</span>
+                        </button>
+                        <div id="tab-transport" class="hidden p-5 bg-sanctuaryBg border-t-2 border-sanctuaryBorder space-y-3.5">
+                            <p class="text-xs sm:text-sm text-charcoalInk font-bold">Quick navigation to nearest transport hubs (वाहतूक सुविधा):</p>
+                            
+                            <button onclick="openGoogleMaps('Bus stand near me')" class="w-full text-left p-4 bg-white hover:bg-emeraldSoft/50 border-2 border-sanctuaryBorder hover:border-emeraldDeep rounded-2xl flex justify-between items-center active:scale-98 shadow-sm">
+                                <div class="flex items-center gap-3">
+                                    <span class="ee-sub text-2xl"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g class="a-drift"><path d="M1 20h6M2 26h5M0 32h6" stroke="#F5C96B" stroke-width="2.2" stroke-linecap="round"/></g><g class="a-bob"><rect x="9" y="10" width="36" height="26" rx="7" fill="#F5A623"/><rect x="13" y="15" width="7.5" height="9" rx="2" fill="#fff"/><rect x="22.5" y="15" width="7.5" height="9" rx="2" fill="#fff"/><rect x="32" y="15" width="9" height="9" rx="2" fill="#fff"/><path d="M9 29h36" stroke="#C77D0A" stroke-width="2"/><circle cx="40.5" cy="32" r="1.6" fill="#FFF3C4"/><circle cx="18" cy="37" r="4.5" fill="#0F2A3D"/><circle cx="18" cy="37" r="1.7" fill="#fff"/><circle cx="36" cy="37" r="4.5" fill="#0F2A3D"/><circle cx="36" cy="37" r="1.7" fill="#fff"/></g></svg></span>
+                                    <div>
+                                        <p class="font-extrabold text-sm text-emeraldDeep">Bus Stand / एसटी बस स्टँड</p>
+                                        <p class="text-xs text-charcoalMuted font-medium">Find nearest bus station route</p>
+                                    </div>
+                                </div>
+                                <span class="bg-emeraldDeep text-goldChampagne text-xs font-bold px-3 py-1.5 rounded-xl shadow shrink-0">Map ➔</span>
+                            </button>
+
+                            <button onclick="openGoogleMaps('Auto rickshaw stand near me')" class="w-full text-left p-4 bg-white hover:bg-emeraldSoft/50 border-2 border-sanctuaryBorder hover:border-emeraldDeep rounded-2xl flex justify-between items-center active:scale-98 shadow-sm">
+                                <div class="flex items-center gap-3">
+                                    <span class="ee-sub text-2xl"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g class="a-bob"><path d="M8 23L13 11h17l5.5 12z" fill="#1F2937"/><path d="M15 14.5h13l3.5 7H11.5z" fill="#BAE6FD"/><rect x="5" y="22" width="36" height="12" rx="4" fill="#F5A623"/><rect x="38" y="25" width="5" height="4.5" rx="1.5" fill="#FFF3C4"/><circle cx="13" cy="36" r="4.2" fill="#0F2A3D"/><circle cx="13" cy="36" r="1.5" fill="#fff"/><circle cx="36" cy="36" r="4.2" fill="#0F2A3D"/><circle cx="36" cy="36" r="1.5" fill="#fff"/></g></svg></span>
+                                    <div>
+                                        <p class="font-extrabold text-sm text-emeraldDeep">Rickshaw Stand / रिक्षा स्टँड</p>
+                                        <p class="text-xs text-charcoalMuted font-medium">Find nearest auto rickshaw stand</p>
+                                    </div>
+                                </div>
+                                <span class="bg-emeraldDeep text-goldChampagne text-xs font-bold px-3 py-1.5 rounded-xl shadow shrink-0">Map ➔</span>
+                            </button>
+
+                            <button onclick="speakText('You can easily hire an auto rickshaw or check bus schedules at the nearby stand. जवळच्या स्टँडवरून रिक्षा किंवा बस पकडणे सोयीचे पडेल.')" class="w-full text-left p-3.5 bg-goldLight/70 border border-goldChampagne rounded-2xl text-xs text-emeraldDeep font-extrabold flex items-center justify-between active:scale-98">
+                                <span>🔊 Listen Transport Tips (प्रवासाची माहिती)</span>
+                                <span class="text-goldRich font-black">Play</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: Nearby General Stores -->
+                    <div id="card-tab-stores" class="service-card bg-white rounded-[1.75rem] border-2 border-sanctuaryBorder shadow-royal overflow-hidden">
+                        <button onclick="toggleTab('tab-stores')" class="w-full p-5 sm:p-6 text-left font-extrabold text-charcoalInk flex justify-between items-center bg-gradient-to-r from-sanctuarySurface/80 to-white hover:from-emeraldSoft/60 hover:to-white transition cursor-pointer">
+                            <span class="flex items-center gap-3.5 text-charcoalInk text-base pointer-events-none">
+                                <span class="w-12 h-12 bg-emeraldDeep text-goldChampagne rounded-2xl flex items-center justify-center text-2xl shadow-md shrink-0 border border-goldChampagne/30"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g class="a-sway"><path d="M17 19v-3a7 7 0 0 1 14 0v3" fill="none" stroke="#B4540A" stroke-width="2.6" stroke-linecap="round"/><path d="M9 19h30l-2.5 22h-25z" fill="#F08A3C"/><path d="M9 19h30l-.5 4.5h-29z" fill="#F7A25F"/><circle cx="19" cy="28" r="1.8" fill="#fff"/><circle cx="29" cy="28" r="1.8" fill="#fff"/><path d="M20 34q4 3.5 8 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></g></svg></span>
+                                <div>
+                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-emeraldDeep/70 block">Daily Essentials</span>
+                                    <span class="font-serif font-bold text-emeraldDeep block">5. General Stores (किराणा आणि जनरल स्टोअर्स)</span>
+                                </div>
+                            </span>
+                            <span id="arrow-tab-stores" class="w-8 h-8 rounded-full bg-sanctuarySurface text-emeraldDeep flex items-center justify-center font-black text-xs transition-transform pointer-events-none shrink-0 border border-sanctuaryBorder">▼</span>
+                        </button>
+                        <div id="tab-stores" class="hidden p-5 bg-sanctuaryBg border-t-2 border-sanctuaryBorder space-y-3.5">
+                            <p class="text-xs sm:text-sm text-charcoalInk font-bold">Find daily essentials and grocery stores (दैनंदिन वस्तूंची दुकाने):</p>
+                            
+                            <button onclick="openGoogleMaps('Grocery store near me')" class="w-full text-left p-4 bg-white hover:bg-emeraldSoft/50 border-2 border-sanctuaryBorder hover:border-emeraldDeep rounded-2xl flex justify-between items-center active:scale-98 shadow-sm">
+                                <div class="flex items-center gap-3">
+                                    <span class="ee-sub text-2xl"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g class="a-sway"><path d="M17 19v-3a7 7 0 0 1 14 0v3" fill="none" stroke="#B4540A" stroke-width="2.6" stroke-linecap="round"/><path d="M9 19h30l-2.5 22h-25z" fill="#F08A3C"/><path d="M9 19h30l-.5 4.5h-29z" fill="#F7A25F"/><circle cx="19" cy="28" r="1.8" fill="#fff"/><circle cx="29" cy="28" r="1.8" fill="#fff"/><path d="M20 34q4 3.5 8 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></g></svg></span>
+                                    <div>
+                                        <p class="font-extrabold text-sm text-emeraldDeep">Grocery / किराणा दुकान</p>
+                                        <p class="text-xs text-charcoalMuted font-medium">Find nearest grocery stores</p>
+                                    </div>
+                                </div>
+                                <span class="bg-emeraldDeep text-goldChampagne text-xs font-bold px-3 py-1.5 rounded-xl shadow shrink-0">Map ➔</span>
+                            </button>
+
+                            <button onclick="openGoogleMaps('General store near me')" class="w-full text-left p-4 bg-white hover:bg-emeraldSoft/50 border-2 border-sanctuaryBorder hover:border-emeraldDeep rounded-2xl flex justify-between items-center active:scale-98 shadow-sm">
+                                <div class="flex items-center gap-3">
+                                    <span class="ee-sub text-2xl"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g class="a-bob"><rect x="9" y="22" width="30" height="18" rx="3" fill="#fff" stroke="#B4540A" stroke-width="2.5"/><path d="M6 22l3-11h30l3 11z" fill="#F08A3C"/><path d="M14 11l-2 11M24 11v11M34 11l2 11" stroke="#fff" stroke-width="2.6"/><rect x="20" y="29" width="8" height="11" rx="2" fill="#F7A25F"/></g></svg></span>
+                                    <div>
+                                        <p class="font-extrabold text-sm text-emeraldDeep">General Store / जनरल स्टोअर्स</p>
+                                        <p class="text-xs text-charcoalMuted font-medium">Daily utilities & provisions</p>
+                                    </div>
+                                </div>
+                                <span class="bg-emeraldDeep text-goldChampagne text-xs font-bold px-3 py-1.5 rounded-xl shadow shrink-0">Map ➔</span>
+                            </button>
+
+                            <button onclick="speakText('You can easily buy daily household items or medicine from nearby stores. जवळच्या दुकानातून तुम्ही घरपोच किंवा थेट खरेदी करू शकता.')" class="w-full text-left p-3.5 bg-goldLight/70 border border-goldChampagne rounded-2xl text-xs text-emeraldDeep font-extrabold flex items-center justify-between active:scale-98">
+                                <span>🔊 Listen Store Tips (माहिती ऐका)</span>
+                                <span class="text-goldRich font-black">Play</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 7: Student Volunteer Support -->
+                    <div id="card-tab-volunteer" class="service-card md:col-span-2 lg:col-span-1 bg-white rounded-[1.75rem] border-2 border-sanctuaryBorder shadow-royal overflow-hidden">
+                        <button onclick="toggleTab('tab-volunteer')" class="w-full p-5 sm:p-6 text-left font-extrabold text-charcoalInk flex justify-between items-center bg-gradient-to-r from-sanctuarySurface/80 to-white hover:from-emeraldSoft/60 hover:to-white transition cursor-pointer">
+                            <span class="flex items-center gap-3.5 text-charcoalInk text-base pointer-events-none">
+                                <span class="w-12 h-12 bg-emeraldDeep text-goldChampagne rounded-2xl flex items-center justify-center text-2xl shadow-md shrink-0 border border-goldChampagne/30"><svg class="ee-ic " viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g class="a-beat"><path d="M24 41C9 30 5 22 9.5 15.5c3.8-5.5 11-4 14.5 1 3.5-5 10.7-6.5 14.5-1C43 22 39 30 24 41z" fill="#BE3A7A"/><path d="M15 17.5c1.5-2 4-2.2 5.5-.8" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" opacity=".7"/></g></svg></span>
+                                <div>
+                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-emeraldDeep/70 block">Home Visit Assistance</span>
+                                    <span class="font-serif font-bold text-emeraldDeep block">7. Student Volunteer Support (विद्यार्थी स्वयंसेवक)</span>
+                                </div>
+                            </span>
+                            <span id="arrow-tab-volunteer" class="w-8 h-8 rounded-full bg-sanctuarySurface text-emeraldDeep flex items-center justify-center font-black text-xs transition-transform pointer-events-none shrink-0 border border-sanctuaryBorder">▼</span>
+                        </button>
+                        <div id="tab-volunteer" class="hidden p-5 bg-sanctuaryBg border-t-2 border-sanctuaryBorder space-y-3.5">
+                            <p class="text-xs sm:text-sm text-charcoalInk font-medium leading-relaxed">
+                                Local student volunteers from Chhatrapati Sambhajinagar & Satara will visit your home to help with smartphones and form filling (स्थानिक विद्यार्थी घरी येऊन मदत करतील).
+                            </p>
+                            <div class="space-y-2.5 pt-1">
+                                <input type="text" id="v-name" placeholder="Your Name / तुमचे नाव" class="w-full p-3.5 border-2 border-sanctuaryBorder rounded-xl text-xs sm:text-sm font-semibold focus:border-emeraldDeep outline-none bg-white text-charcoalInk">
+                                <input type="tel" id="v-phone" placeholder="Phone Number / मोबाईल नंबर" class="w-full p-3.5 border-2 border-sanctuaryBorder rounded-xl text-xs sm:text-sm font-semibold focus:border-emeraldDeep outline-none bg-white text-charcoalInk">
+                                <button onclick="requestVolunteer()" class="w-full bg-emeraldDeep hover:bg-emeraldRich active:scale-98 text-goldChampagne font-extrabold p-3.5 rounded-xl shadow text-xs sm:text-sm transition cursor-pointer">
+                                    Send Volunteer Request (मदतीसाठी विनंती पाठवा)
+                                </button>
+                            </div>
+                            <p id="v-msg" class="text-xs sm:text-sm text-sky-800 bg-sky-50 border border-sky-200 p-3 rounded-xl font-bold hidden text-center">
+                                ✓ Request sent successfully! Volunteer will call you soon.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- VIEW 2: INTERNAL USER HISTORY VIEW -->
+        <section id="view-history" class="hidden space-y-6 animate-[royalReveal_0.3s_ease-out]">
+            <div class="subview-surface bg-white rounded-[2rem] border-2 border-sanctuaryBorder shadow-royal p-6 sm:p-8 space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b-2 border-sanctuaryBorder pb-5">
+                    <div class="flex items-center gap-3.5">
+                        <span class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-900 border-2 border-amber-300 flex items-center justify-center text-2xl shadow-sm">📜</span>
+                        <div>
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-sky-700">Personal Concierge Ledger</span>
+                            <h2 class="text-2xl sm:text-3xl font-serif font-bold text-charcoalInk">My Booking History / माझा इतिहास</h2>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2.5">
+                        <button onclick="returnToDrawerFromSubView()" class="px-4 py-2.5 rounded-xl bg-sanctuarySurface hover:bg-sky-100 text-emeraldDeep font-extrabold text-xs sm:text-sm border border-sanctuaryBorder cursor-pointer">
+                            ☰ Back to Drawer
+                        </button>
+                        <button onclick="showMainView('home')" class="px-4 py-2.5 rounded-xl bg-[#0369A1] hover:bg-[#075985] text-white font-extrabold text-xs sm:text-sm shadow cursor-pointer">
+                            ← Back to Normal Page
+                        </button>
+                    </div>
+                </div>
+
+                <div id="history-container" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <!-- VIEW 3: INTERNAL SETTINGS VIEW -->
+        <section id="view-settings" class="hidden space-y-6 animate-[royalReveal_0.3s_ease-out]">
+            <div class="subview-surface bg-white rounded-[2rem] border-2 border-sanctuaryBorder shadow-royal p-6 sm:p-8 space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b-2 border-sanctuaryBorder pb-5">
+                    <div class="flex items-center gap-3.5">
+                        <span class="w-14 h-14 rounded-2xl bg-purple-100 text-purple-900 border-2 border-purple-300 flex items-center justify-center text-2xl shadow-sm">⚙️</span>
+                        <div>
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-purple-700">Display & Accessibility Preferences</span>
+                            <h2 class="text-2xl sm:text-3xl font-serif font-bold text-charcoalInk">App Settings / सेटिंग्ज</h2>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2.5">
+                        <button onclick="returnToDrawerFromSubView()" class="px-4 py-2.5 rounded-xl bg-sanctuarySurface hover:bg-sky-100 text-emeraldDeep font-extrabold text-xs sm:text-sm border border-sanctuaryBorder cursor-pointer">
+                            ☰ Back to Drawer
+                        </button>
+                        <button onclick="showMainView('home')" class="px-4 py-2.5 rounded-xl bg-[#0369A1] hover:bg-[#075985] text-white font-extrabold text-xs sm:text-sm shadow cursor-pointer">
+                            ← Back to Normal Page
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="p-5 rounded-3xl border-2 border-sanctuaryBorder bg-sanctuaryBg/60 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-extrabold text-base text-charcoalInk">🌙 Dark / Sky Sanctuary Mode</p>
+                                <p class="text-xs text-charcoalMuted">Switch between soothing Sky-Blue Day mode and low-glare Night mode.</p>
+                            </div>
+                            <button onclick="toggleDarkModeSetting()" id="setting-dark-btn" class="px-4 py-2.5 rounded-xl font-extrabold text-xs bg-[#0369A1] text-white shadow cursor-pointer">
+                                Switch Mode
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="p-5 rounded-3xl border-2 border-sanctuaryBorder bg-sanctuaryBg/60 space-y-3">
+                        <p class="font-extrabold text-base text-charcoalInk">🔍 Text & Font Size (अक्षरांचा आकार)</p>
+                        <p class="text-xs text-charcoalMuted">Choose the reading size that feels most comfortable for your eyes.</p>
+                        <div class="grid grid-cols-3 gap-2 pt-1">
+                            <button onclick="setFontScale('normal')" class="py-2.5 px-3 rounded-xl font-extrabold text-xs border-2 border-sanctuaryBorder bg-white text-charcoalInk hover:border-sky-600 cursor-pointer">Normal (100%)</button>
+                            <button onclick="setFontScale('large')" class="py-2.5 px-3 rounded-xl font-extrabold text-xs border-2 border-sky-500 bg-sky-50 text-sky-900 cursor-pointer">Large (120%)</button>
+                            <button onclick="setFontScale('xlarge')" class="py-2.5 px-3 rounded-xl font-extrabold text-xs border-2 border-sanctuaryBorder bg-white text-charcoalInk hover:border-sky-600 cursor-pointer">Extra Large (135%)</button>
+                        </div>
+                    </div>
+
+                    <div class="p-5 rounded-3xl border-2 border-sanctuaryBorder bg-sanctuaryBg/60 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-extrabold text-base text-charcoalInk">🔊 Voice Assistant Speed</p>
+                                <p class="text-xs text-charcoalMuted">Adjust how fast or slow the Marathi/English voice speaks.</p>
+                            </div>
+                            <select id="setting-voice-rate" onchange="updateVoiceRate(this.value)" class="p-2.5 rounded-xl font-extrabold text-xs border border-sanctuaryBorder">
+                                <option value="0.72">Very Slow & Clear (0.7x)</option>
+                                <option value="0.82" selected>Senior Comfort (0.8x)</option>
+                                <option value="1.0">Standard Speed (1.0x)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="p-5 rounded-3xl border-2 border-sanctuaryBorder bg-sanctuaryBg/60 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-extrabold text-base text-charcoalInk">🔔 Gentle Harmonic Chimes</p>
+                                <p class="text-xs text-charcoalMuted">Play a soft confirmation tone when tapping buttons.</p>
+                            </div>
+                            <button onclick="toggleSoundChimes()" id="setting-chime-btn" class="px-4 py-2.5 rounded-xl font-extrabold text-xs bg-emerald-700 text-white shadow cursor-pointer">
+                                Enabled ✓
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 4: ROYAL DEVELOPER CONSOLE -->
+        <section id="view-developer" class="hidden space-y-6 animate-[royalReveal_0.3s_ease-out]">
+
+            <div id="dev-lock-screen" class="bg-gradient-to-br from-slate-950 via-slate-900 to-[#07192B] text-white rounded-[2.25rem] border-2 border-amber-400/50 shadow-2xl p-7 sm:p-12 max-w-xl mx-auto text-center space-y-6">
+                <div class="w-20 h-20 rounded-3xl bg-amber-400/15 border-2 border-amber-400 text-amber-300 flex items-center justify-center text-4xl mx-auto shadow-lg">
+                    🗝️
+                </div>
+                <div class="space-y-2">
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-amber-300 bg-amber-400/10 px-3.5 py-1 rounded-full border border-amber-400/30">
+                        Restricted Royal Developer Vault
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-serif font-bold text-white">Developer Security Key Required</h2>
+                    <p class="text-xs sm:text-sm text-slate-300">
+                        Enter the authorized Developer Password to inspect live ranked users, profiles, timestamps, and printable booking receipts.
+                    </p>
+                </div>
+
+                <div class="space-y-3 text-left">
+                    <label class="block text-xs font-extrabold uppercase tracking-wider text-amber-300">Developer Key 🗝️ (Default: ELDER2026)</label>
+                    <input id="dev-password-input" type="password" onkeydown="if(event.key==='Enter') unlockDeveloperConsole()" placeholder="Enter Developer Key..." class="w-full p-4 rounded-2xl bg-slate-900/90 border-2 border-amber-400/50 text-white font-bold text-sm focus:border-amber-300 outline-none">
+                    <p id="dev-lock-error" class="text-xs font-extrabold text-red-400 hidden">✕ Access Denied: Invalid Developer Password Key!</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button onclick="unlockDeveloperConsole()" class="flex-1 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-extrabold py-4 px-6 rounded-2xl shadow-lg text-sm cursor-pointer">
+                        🗝️ Unlock Royal Developer Console
+                    </button>
+                    <button onclick="showMainView('home')" class="py-4 px-5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm cursor-pointer">
+                        ← Exit
+                    </button>
+                </div>
+            </div>
+
+            <div id="dev-dashboard-screen" class="hidden bg-gradient-to-br from-slate-950 via-[#091E34] to-slate-900 text-white rounded-[2.25rem] border-2 border-amber-400/60 shadow-2xl p-6 sm:p-8 lg:p-10 space-y-8">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-amber-400/30 pb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-300 to-amber-500 text-slate-950 font-serif font-black text-2xl flex items-center justify-center shadow-lg">
+                            👑
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[11px] font-extrabold uppercase tracking-widest text-amber-300">Royal Command Center • Unlocked</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">● LIVE DB</span>
+                            </div>
+                            <h2 class="text-2xl sm:text-3xl font-serif font-bold text-white mt-0.5">ElderEase Developer Telemetry & User Ledger</h2>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2.5">
+                        <button onclick="refreshDeveloperData()" class="px-4 py-2.5 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 border border-amber-400/40 font-extrabold text-xs sm:text-sm cursor-pointer">
+                            ↻ Refresh Live Data
+                        </button>
+                        <button onclick="returnToDrawerFromSubView()" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs sm:text-sm cursor-pointer">
+                            ☰ Drawer
+                        </button>
+                        <button onclick="showMainView('home')" class="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow cursor-pointer">
+                            ← Normal Page
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="p-5 rounded-3xl bg-white/5 border border-amber-400/30 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-amber-200/80 font-bold">Total Registered Users</p>
+                            <p id="dev-stat-users" class="text-3xl font-serif font-extrabold text-white mt-1">0</p>
+                        </div>
+                        <span class="text-3xl">👥</span>
+                    </div>
+                    <div class="p-5 rounded-3xl bg-white/5 border border-sky-400/30 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-sky-200/80 font-bold">Total Bookings & Slips</p>
+                            <p id="dev-stat-bookings" class="text-3xl font-serif font-extrabold text-white mt-1">0</p>
+                        </div>
+                        <span class="text-3xl">📑</span>
+                    </div>
+                    <div class="p-5 rounded-3xl bg-white/5 border border-emerald-400/30 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs uppercase tracking-wider text-emerald-200/80 font-bold">Ranking Order</p>
+                            <p class="text-lg font-serif font-extrabold text-emerald-300 mt-1">Latest Activity First ⚡</p>
+                        </div>
+                        <span class="text-3xl">🏆</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <div class="lg:col-span-5 bg-slate-900/90 rounded-3xl border border-amber-400/30 p-5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h3 class="font-serif font-bold text-lg text-amber-300">🏆 Ranked Users (By Latest)</h3>
+                            <span class="text-[11px] text-slate-400 font-semibold">Click Profile or History</span>
+                        </div>
+                        <div id="dev-users-list" class="space-y-3 max-h-[540px] overflow-y-auto pr-1"></div>
+                    </div>
+
+                    <div class="lg:col-span-7 bg-slate-900/90 rounded-3xl border border-sky-400/30 p-6 space-y-5 min-h-[420px]">
+                        <div id="dev-inspector-content" class="space-y-5">
+                            <div class="text-center py-16 text-slate-400 space-y-2">
+                                <p class="text-4xl">👑</p>
+                                <p class="font-bold text-base text-white">Select a User from the Ranked List</p>
+                                <p class="text-xs">Click <b>"👤 Profile"</b> to inspect their identity card or <b>"📜 Work & History"</b> to inspect all their bookings and print official receipts.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- DIGNIFIED HERITAGE FOOTER -->
+    <footer class="bg-emeraldDeep border-t-2 border-goldChampagne/40 py-6 px-4 sm:px-6 lg:px-8 text-center text-sanctuaryBg text-xs sm:text-sm font-semibold mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+                <span class="bg-goldChampagne text-emeraldDeep font-serif font-black px-2.5 py-0.5 rounded-lg text-sm">EE</span>
+                <p class="text-goldLight font-bold">ElderEase • Community Engineering Project (CEP)</p>
+            </div>
+            <p class="text-sanctuaryBg/80">Designed for Senior Inclusion, Calmness & Accessibility (SDG 10)</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let audioCtx = null;
+        let lastSpokenText = "";
+        let allTabsExpanded = false;
+        let voiceSpeechRate = 0.82;
+        let soundChimesEnabled = true;
+
+        let currentUser = null;
+        let pendingProtectedAction = null;
+        let devPassCache = "";
+        let devUsersCache = [];
+
+        const allTabIds = [
+            'tab-hospitals',
+            'tab-forms',
+            'tab-emergency',
+            'tab-transport',
+            'tab-stores',
+            'tab-navigator',
+            'tab-volunteer'
+        ];
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function speakText(text) {
+            lastSpokenText = text;
+            showToast("🔊 " + text);
+            playChime();
+
+            if ('speechSynthesis' in window) {
+                try {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = voiceSpeechRate;
+                    utterance.pitch = 1.0;
+                    
+                    const voices = window.speechSynthesis.getVoices();
+                    const voice = voices.find(v => v.lang.includes('en') || v.lang.includes('hi') || v.lang.includes('mr'));
+                    if (voice) utterance.voice = voice;
+                    
+                    window.speechSynthesis.speak(utterance);
+                } catch (e) {
+                    console.log("SpeechSynthesis error:", e);
+                }
+            }
+        }
+
+        function speakWelcomeMessage() {
+            speakText("Welcome to ElderEase. Tap any service below for hospitals, transport, government forms, or live navigation. एल्डरईझ मध्ये आपले स्वागत आहे.");
+        }
+
+        function repeatLastInstruction() {
+            if (lastSpokenText) {
+                speakText(lastSpokenText);
+            } else {
+                speakText("No previous instruction to repeat.");
+            }
+        }
+
+        function playChime() {
+            if (!soundChimesEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.14);
+                
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.008, ctx.currentTime + 0.28);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.28);
+            } catch (err) {
+                console.log("Audio play error:", err);
+            }
+        }
+
+        let toastTimeout = null;
+        function showToast(msg) {
+            let toast = document.getElementById('app-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'app-toast';
+                toast.className = 'fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-emeraldDeep/95 backdrop-blur-md text-sanctuaryBg px-5 py-3.5 rounded-2xl text-xs sm:text-sm font-bold shadow-royal-lg z-50 border-2 border-goldChampagne max-w-md w-[90%] sm:w-auto text-center';
+                document.body.appendChild(toast);
+            }
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3800);
+        }
+
+        function toggleTab(tabId) {
+            getAudioContext();
+            playChime();
+            
+            const targetTab = document.getElementById(tabId);
+            const targetArrow = document.getElementById('arrow-' + tabId);
+            const wasHidden = targetTab.classList.contains('hidden');
+
+            allTabIds.forEach(id => {
+                const el = document.getElementById(id);
+                const arr = document.getElementById('arrow-' + id);
+                if (el) el.classList.add('hidden');
+                if (arr) arr.style.transform = 'rotate(0deg)';
+            });
+
+            if (wasHidden) {
+                targetTab.classList.remove('hidden');
+                targetTab.classList.add('tab-content-active');
+                if (targetArrow) targetArrow.style.transform = 'rotate(180deg)';
+                setTimeout(() => {
+                    targetTab.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 60);
+            }
+        }
+
+        function jumpToService(tabId) {
+            showMainView('home');
+            const targetTab = document.getElementById(tabId);
+            if (targetTab && targetTab.classList.contains('hidden')) {
+                toggleTab(tabId);
+            } else {
+                playChime();
+            }
+            const cardEl = document.getElementById('card-' + tabId) || targetTab;
+            if (cardEl) {
+                setTimeout(() => {
+                    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 80);
+            }
+        }
+
+        function openAllTabsToggle() {
+            getAudioContext();
+            playChime();
+            allTabsExpanded = !allTabsExpanded;
+            const label = document.getElementById('expand-all-label');
+
+            allTabIds.forEach(id => {
+                const el = document.getElementById(id);
+                const arr = document.getElementById('arrow-' + id);
+                if (!el) return;
+                if (allTabsExpanded) {
+                    el.classList.remove('hidden');
+                    el.classList.add('tab-content-active');
+                    if (arr) arr.style.transform = 'rotate(180deg)';
+                } else {
+                    el.classList.add('hidden');
+                    if (arr) arr.style.transform = 'rotate(0deg)';
+                }
+            });
+
+            if (label) {
+                label.innerText = allTabsExpanded ? 'Collapse All' : 'Expand All';
+            }
+            showToast(allTabsExpanded ? "⊞ All services expanded for full view" : "⊞ Services collapsed");
+        }
+
+        function openGoogleMaps(query) {
+            getAudioContext();
+            playChime();
+            showToast("📍 Opening Google Maps for " + query);
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        const lat = pos.coords.latitude;
+                        const lng = pos.coords.longitude;
+                        window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}/@${lat},${lng},15z`, '_blank');
+                    },
+                    () => {
+                        window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
+                    },
+                    { timeout: 5000 }
+                );
+            } else {
+                window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
+            }
+        }
+
+        function startLiveNavigation() {
+            getAudioContext();
+            playChime();
+            const destination = document.getElementById('destination-input').value.trim();
+            
+            if (!destination) {
+                showToast("Please type a destination address / कृपया पत्ता प्रविष्ट करा");
+                speakText("Please type a destination address in the box.");
+                return;
+            }
+
+            const navBox = document.getElementById('nav-instructions-box');
+            const navText = document.getElementById('nav-instruction-text');
+            navBox.classList.remove('hidden');
+
+            navText.innerText = `Calculating best route to "${destination}" from your GPS location...`;
+            speakText(`Navigating to ${destination}. Fetching live location route.`);
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        const lat = pos.coords.latitude;
+                        const lng = pos.coords.longitude;
+                        
+                        setTimeout(() => {
+                            navText.innerHTML = `✓ Route ready!<br>• Destination: <b>${escapeHtml(destination)}</b><br>• Opening turn-by-turn Google Maps guidance.`;
+                            speakText(`Route is ready. Starting turn-by-turn directions to ${destination}.`);
+                            window.open(`https://www.google.com/maps/dir/?api=1&origin=${lat},${lng}&destination=${encodeURIComponent(destination)}`, '_blank');
+                        }, 1200);
+                    },
+                    () => {
+                        navText.innerHTML = `✓ Route ready!<br>• Destination: <b>${escapeHtml(destination)}</b><br>• Opening Google Maps search.`;
+                        speakText(`Opening map route to ${destination}.`);
+                        window.open(`https://www.google.com/maps/search/${encodeURIComponent(destination)}`, '_blank');
+                    },
+                    { timeout: 5000 }
+                );
+            } else {
+                window.open(`https://www.google.com/maps/search/${encodeURIComponent(destination)}`, '_blank');
+            }
+        }
+
+        function quickPresetDestinations() {
+            const places = ["Civil Hospital", "Kranti Chowk Bus Stand", "Collector Office", "Railway Station"];
+            const randomPlace = places[Math.floor(Math.random() * places.length)];
+            document.getElementById('destination-input').value = randomPlace;
+            startLiveNavigation();
+        }
+
+        let isLarge = false;
+        function toggleTextSize() {
+            getAudioContext();
+            playChime();
+            isLarge = !isLarge;
+            setFontScale(isLarge ? 'large' : 'normal');
+        }
+
+        function setFontScale(mode) {
+            const root = document.getElementById('app-root');
+            const label = document.getElementById('size-label');
+            root.classList.remove('text-scale-large', 'text-scale-xlarge');
+            if (mode === 'large') {
+                root.classList.add('text-scale-large');
+                isLarge = true;
+                if (label) label.innerText = 'Normal Text';
+                showToast("🔍 Large text view enabled");
+            } else if (mode === 'xlarge') {
+                root.classList.add('text-scale-xlarge');
+                isLarge = true;
+                if (label) label.innerText = 'Normal Text';
+                showToast("🔍 Extra-Large text view enabled");
+            } else {
+                isLarge = false;
+                if (label) label.innerText = 'Large Text';
+                showToast("🔍 Normal text restored");
+            }
+        }
+
+        function openDrawer() {
+            playChime();
+            const backdrop = document.getElementById('drawer-backdrop');
+            const drawer = document.getElementById('nav-drawer');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+            drawer.classList.remove('-translate-x-full');
+        }
+
+        function closeDrawer() {
+            const backdrop = document.getElementById('drawer-backdrop');
+            const drawer = document.getElementById('nav-drawer');
+            backdrop.classList.add('opacity-0');
+            drawer.classList.add('-translate-x-full');
+            setTimeout(() => backdrop.classList.add('hidden'), 280);
+        }
+
+        function toggleDrawerProfileEditor() {
+            playChime();
+            if (!currentUser) {
+                closeDrawer();
+                openGoogleLoginModal("Please sign in with Google first to edit your profile.");
+                return;
+            }
+            const form = document.getElementById('drawer-profile-form');
+            form.classList.toggle('hidden');
+        }
+
+        function showMainView(viewName) {
+            playChime();
+            ['view-home', 'view-history', 'view-settings', 'view-developer'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById('view-' + viewName);
+            if (target) target.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function returnToDrawerFromSubView() {
+            showMainView('home');
+            setTimeout(() => openDrawer(), 120);
+        }
+
+        function openHistoryView() {
+            closeDrawer();
+            showMainView('history');
+            renderUserHistoryView();
+        }
+
+        function openSettingsView() {
+            closeDrawer();
+            showMainView('settings');
+        }
+
+        function openDeveloperView() {
+            closeDrawer();
+            showMainView('developer');
+            if (devPassCache) {
+                refreshDeveloperData();
+            }
+        }
+
+        function handleHeaderAuthClick() {
+            if (currentUser) {
+                openDrawer();
+            } else {
+                openGoogleLoginModal();
+            }
+        }
+
+        function handleBottomAuthAction() {
+            if (currentUser) {
+                logoutUser();
+            } else {
+                closeDrawer();
+                openGoogleLoginModal();
+            }
+        }
+
+        function openGoogleLoginModal(reasonText) {
+            playChime();
+            const modal = document.getElementById('google-auth-modal');
+            const reasonEl = document.getElementById('auth-modal-reason');
+            if (reasonText) {
+                reasonEl.innerText = reasonText;
+            } else {
+                reasonEl.innerText = "Select a Google account or enter your details below. Your Name & Profile will automatically fill into all booking forms!";
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeGoogleLoginModal() {
+            const modal = document.getElementById('google-auth-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function submitCustomGoogleLogin() {
+            const name = document.getElementById('g-custom-name').value.trim();
+            const email = document.getElementById('g-custom-email').value.trim();
+            const phone = document.getElementById('g-custom-phone').value.trim();
+            const age = document.getElementById('g-custom-age').value.trim();
+            if (!name || !email) {
+                showToast("Please enter both your Name and Google Email.");
+                return;
+            }
+            completeGoogleSignIn(email, name, phone, age);
+        }
+
+        async function completeGoogleSignIn(email, name, phone = '', age = '') {
+            playChime();
+            const payload = {
+                email,
+                name,
+                phone,
+                age,
+                picture: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0369A1&color=fff&bold=true`
+            };
+
+            try {
+                const res = await fetch('/api/auth/google', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success && data.user) {
+                    currentUser = data.user;
+                } else {
+                    currentUser = { id: 'usr_local_' + Date.now(), ...payload };
+                }
+            } catch (err) {
+                currentUser = { id: 'usr_local_' + Date.now(), ...payload };
+            }
+
+            localStorage.setItem('elderease_user', JSON.stringify(currentUser));
+            closeGoogleLoginModal();
+            syncUserUIAndAutoFill();
+            await syncUserBookingsFromServer();
+            showToast(`✓ Signed in as ${currentUser.name}`);
+            speakText(`Welcome ${currentUser.name}. Your profile details have been automatically filled.`);
+
+            if (typeof pendingProtectedAction === 'function') {
+                const fn = pendingProtectedAction;
+                pendingProtectedAction = null;
+                setTimeout(() => fn(), 250);
+            }
+        }
+
+        function logoutUser() {
+            playChime();
+            const oldName = currentUser ? currentUser.name : '';
+            currentUser = null;
+            pendingProtectedAction = null;
+            localStorage.removeItem('elderease_user');
+            syncUserUIAndAutoFill();
+            closeDrawer();
+            showMainView('home');
+            showToast(`Signed out ${oldName}. You can log in again anytime.`);
+        }
+
+        function syncUserUIAndAutoFill() {
+            const headerLabel = document.getElementById('header-auth-label');
+            const headerAvatar = document.getElementById('header-user-avatar');
+            const headerGoogleIcon = document.getElementById('header-google-icon');
+            const heroGreeting = document.getElementById('hero-user-greeting');
+            const apptBadge = document.getElementById('appt-auth-badge');
+
+            const drawerLoggedOut = document.getElementById('drawer-logged-out');
+            const drawerLoggedIn = document.getElementById('drawer-logged-in');
+            const drawerName = document.getElementById('drawer-user-name');
+            const drawerEmail = document.getElementById('drawer-user-email');
+            const drawerAvatar = document.getElementById('drawer-user-avatar');
+
+            const bottomBtn = document.getElementById('drawer-bottom-auth-btn');
+            const bottomIcon = document.getElementById('drawer-bottom-auth-icon');
+            const bottomText = document.getElementById('drawer-bottom-auth-text');
+
+            if (currentUser) {
+                headerLabel.innerText = currentUser.name.split(' ')[0];
+                headerAvatar.src = currentUser.picture;
+                headerAvatar.classList.remove('hidden');
+                headerGoogleIcon.classList.add('hidden');
+                if (heroGreeting) heroGreeting.innerText = `• ${currentUser.name.split(' ')[0]}`;
+
+                if (apptBadge) {
+                    apptBadge.className = "text-[11px] font-extrabold px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300";
+                    apptBadge.innerText = `✓ Auto-filled for ${currentUser.name}`;
+                }
+
+                drawerLoggedOut.classList.add('hidden');
+                drawerLoggedIn.classList.remove('hidden');
+                drawerName.innerText = currentUser.name;
+                drawerEmail.innerText = currentUser.email;
+                drawerAvatar.src = currentUser.picture;
+
+                document.getElementById('prof-name').value = currentUser.name || '';
+                document.getElementById('prof-phone').value = currentUser.phone || '';
+                document.getElementById('prof-age').value = currentUser.age || '';
+                document.getElementById('prof-address').value = currentUser.address || '';
+
+                const apptName = document.getElementById('appt-name');
+                const apptPhone = document.getElementById('appt-phone');
+                const apptAge = document.getElementById('appt-age');
+                const vName = document.getElementById('v-name');
+                const vPhone = document.getElementById('v-phone');
+
+                if (apptName && !apptName.value) apptName.value = currentUser.name || '';
+                if (apptPhone && !apptPhone.value) apptPhone.value = currentUser.phone || '';
+                if (apptAge && !apptAge.value) apptAge.value = currentUser.age || '';
+                if (vName && !vName.value) vName.value = currentUser.name || '';
+                if (vPhone && !vPhone.value) vPhone.value = currentUser.phone || '';
+
+                bottomBtn.className = "w-full py-3.5 px-4 rounded-2xl font-extrabold text-sm shadow flex items-center justify-center gap-2 transition cursor-pointer bg-red-700 hover:bg-red-800 text-white";
+                bottomIcon.innerText = "🚪";
+                bottomText.innerText = "Logout (" + currentUser.name.split(' ')[0] + ")";
+            } else {
+                headerLabel.innerText = "Login";
+                headerAvatar.classList.add('hidden');
+                headerGoogleIcon.classList.remove('hidden');
+                if (heroGreeting) heroGreeting.innerText = "";
+
+                if (apptBadge) {
+                    apptBadge.className = "text-[11px] font-extrabold px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300";
+                    apptBadge.innerText = "🔐 Login required to book";
+                }
+
+                drawerLoggedOut.classList.remove('hidden');
+                drawerLoggedIn.classList.add('hidden');
+                document.getElementById('drawer-profile-form').classList.add('hidden');
+
+                bottomBtn.className = "w-full py-3.5 px-4 rounded-2xl font-extrabold text-sm shadow flex items-center justify-center gap-2 transition cursor-pointer bg-[#0369A1] hover:bg-[#075985] text-white";
+                bottomIcon.innerText = "🔐";
+                bottomText.innerText = "Login with Google";
+            }
+        }
+
+        async function saveUserProfile() {
+            if (!currentUser) return;
+            const name = document.getElementById('prof-name').value.trim();
+            const phone = document.getElementById('prof-phone').value.trim();
+            const age = document.getElementById('prof-age').value.trim();
+            const address = document.getElementById('prof-address').value.trim();
+
+            if (!name) {
+                showToast("Name cannot be empty.");
+                return;
+            }
+
+            currentUser.name = name;
+            currentUser.phone = phone;
+            currentUser.age = age;
+            currentUser.address = address;
+            currentUser.picture = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0369A1&color=fff&bold=true`;
+
+            try {
+                const res = await fetch('/api/user/profile', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentUser)
+                });
+                const data = await res.json();
+                if (data.success && data.user) currentUser = data.user;
+            } catch (e) {}
+
+            localStorage.setItem('elderease_user', JSON.stringify(currentUser));
+
+            document.getElementById('appt-name').value = currentUser.name || '';
+            document.getElementById('appt-phone').value = currentUser.phone || '';
+            document.getElementById('appt-age').value = currentUser.age || '';
+            document.getElementById('v-name').value = currentUser.name || '';
+            document.getElementById('v-phone').value = currentUser.phone || '';
+
+            syncUserUIAndAutoFill();
+            showToast("✓ Profile updated & auto-filled into forms!");
+        }
+
+        let latestAppointmentId = null;
+        const hospitalLinks = {
+            'Medicover Hospitals': 'https://www.medicoverhospitals.in/',
+            'MGM Medical College and Hospital': 'https://mgmmcha.org/',
+            'Kamalnayan Bajaj Hospital': 'https://www.bajajhospital.com/',
+            'Seth Nandlal Dhoot Hospital': 'https://dhoothospitals.com/',
+            'Dr. Hedgewar Hospital': 'https://www.hedgewar.org/',
+            'Apex Superspeciality Hospital': 'https://www.apexaurangabad.com',
+            'JJ Plus Hospitals': 'https://jjplushospitals.com/',
+            'United CIIGMA Hospital': 'https://ciigmagroup.org/'
+        };
+
+        function getAppointments() {
+            try { return JSON.parse(localStorage.getItem('elderease_appointments') || '[]'); }
+            catch (e) { return []; }
+        }
+
+        function saveAppointments(items) {
+            try { localStorage.setItem('elderease_appointments', JSON.stringify(items)); }
+            catch (e) { showToast('Could not save on this browser. Please print the slip now.'); }
+        }
+
+        async function syncUserBookingsFromServer() {
+            if (!currentUser || !currentUser.email) return;
+            try {
+                const res = await fetch('/api/bookings/user/' + encodeURIComponent(currentUser.email));
+                const data = await res.json();
+                if (data.success && Array.isArray(data.bookings)) {
+                    const mapped = data.bookings.map(b => ({
+                        id: b.id,
+                        type: b.type || 'APPOINTMENT',
+                        hospital: b.title,
+                        name: b.patientName,
+                        phone: b.phone,
+                        age: b.age,
+                        department: b.department,
+                        date: b.date,
+                        time: b.time,
+                        reason: b.reason,
+                        createdAt: b.createdAt
+                    }));
+                    saveAppointments(mapped);
+                    renderAppointments();
+                }
+            } catch (e) {}
+        }
+
+        async function createAppointment() {
+            if (!currentUser) {
+                pendingProtectedAction = createAppointment;
+                openGoogleLoginModal("🔐 Compulsory Login Required: Please sign in with Google to book your Hospital Appointment.");
+                speakText("Please sign in with Google to book your appointment.");
+                return;
+            }
+
+            const name = document.getElementById('appt-name').value.trim() || currentUser.name;
+            const phone = document.getElementById('appt-phone').value.trim() || currentUser.phone;
+            const date = document.getElementById('appt-date').value;
+            if (!name || !phone || !date) {
+                showToast('Enter patient name, mobile number and date.');
+                return;
+            }
+            if (!/^[0-9+() -]{8,16}$/.test(phone)) {
+                showToast('Please enter a valid mobile number.');
+                return;
+            }
+            const hospital = document.getElementById('appt-hospital').value;
+            const age = document.getElementById('appt-age').value;
+            const department = document.getElementById('appt-dept').value.trim();
+            const time = document.getElementById('appt-time').value;
+            const reason = document.getElementById('appt-reason').value.trim();
+
+            let appt = {
+                id: 'EE-' + Date.now().toString().slice(-8),
+                type: 'APPOINTMENT',
+                hospital,
+                name,
+                phone,
+                age,
+                department,
+                date,
+                time,
+                reason,
+                createdAt: new Date().toLocaleString()
+            };
+
+            try {
+                const res = await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: currentUser.id,
+                        userEmail: currentUser.email,
+                        userName: currentUser.name,
+                        type: 'APPOINTMENT',
+                        title: hospital,
+                        patientName: name,
+                        phone,
+                        age,
+                        department,
+                        date,
+                        time,
+                        reason
+                    })
+                });
+                const data = await res.json();
+                if (data.success && data.booking) {
+                    appt.id = data.booking.id;
+                    appt.createdAt = data.booking.createdAt;
+                }
+            } catch (e) {}
+
+            const items = getAppointments();
+            items.unshift(appt);
+            saveAppointments(items);
+            latestAppointmentId = appt.id;
+            document.getElementById('appt-result').classList.remove('hidden');
+            document.getElementById('appt-result-text').textContent = 'Slip No: ' + appt.id + ' | ' + appt.hospital + ' | ' + appt.date + ' (' + appt.time + ')';
+            renderAppointments();
+            speakText('Your appointment request slip has been created and saved to your history.');
+        }
+
+        async function requestVolunteer() {
+            getAudioContext();
+            playChime();
+
+            if (!currentUser) {
+                pendingProtectedAction = requestVolunteer;
+                openGoogleLoginModal("🔐 Compulsory Login Required: Please sign in with Google to book a Student Volunteer Home Visit.");
+                speakText("Please sign in with Google to request a student volunteer.");
+                return;
+            }
+
+            const name = document.getElementById('v-name').value.trim() || currentUser.name;
+            const phone = document.getElementById('v-phone').value.trim() || currentUser.phone;
+            if (name && phone) {
+                let volSlip = {
+                    id: 'EE-' + Date.now().toString().slice(-8),
+                    type: 'VOLUNTEER',
+                    hospital: 'Student Volunteer Home Visit',
+                    name,
+                    phone,
+                    age: currentUser.age || '',
+                    department: 'Smartphone & Govt Form Help',
+                    date: new Date().toISOString().slice(0, 10),
+                    time: 'Daytime Visit',
+                    reason: 'Home visit requested by senior citizen',
+                    createdAt: new Date().toLocaleString()
+                };
+
+                try {
+                    const res = await fetch('/api/bookings', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            userId: currentUser.id,
+                            userEmail: currentUser.email,
+                            userName: currentUser.name,
+                            type: 'VOLUNTEER',
+                            title: 'Student Volunteer Home Visit',
+                            patientName: name,
+                            phone,
+                            age: currentUser.age || '',
+                            department: 'Smartphone & Govt Form Help',
+                            date: volSlip.date,
+                            time: volSlip.time,
+                            reason: volSlip.reason
+                        })
+                    });
+                    const data = await res.json();
+                    if (data.success && data.booking) {
+                        volSlip.id = data.booking.id;
+                        volSlip.createdAt = data.booking.createdAt;
+                    }
+                } catch (e) {}
+
+                const items = getAppointments();
+                items.unshift(volSlip);
+                saveAppointments(items);
+                renderAppointments();
+
+                document.getElementById('v-msg').classList.remove('hidden');
+                showToast("✓ Volunteer request registered & added to your History!");
+                speakText("Volunteer request successfully sent. Someone will call you shortly.");
+            } else {
+                showToast("Please enter your name and phone number / कृपया नाव आणि फोन नंबर प्रविष्ट करा");
+                speakText("Please enter your name and phone number.");
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+
+        function renderAppointments() {
+            const items = getAppointments();
+            const host = document.getElementById('appt-list');
+            if (!items.length) { host.innerHTML = '<p class="text-xs text-charcoalMuted">No appointment slips created yet.</p>'; return; }
+            host.innerHTML = items.map(a => `<div class="p-3.5 bg-white border-2 border-sanctuaryBorder rounded-2xl text-xs sm:text-sm space-y-1 shadow-sm"><p class="font-extrabold text-charcoalInk">${escapeHtml(a.hospital)}</p><p class="text-charcoalMuted">Slip: ${escapeHtml(a.id)} · ${escapeHtml(a.date)} · ${escapeHtml(a.time)}</p><p class="text-charcoalMuted">Patient: ${escapeHtml(a.name)}</p><div class="flex gap-2 pt-1"><button onclick="printAppointment('${escapeHtml(a.id)}')" class="bg-emeraldDeep text-white px-3 py-2 rounded-lg font-bold">Print Receipt</button><button onclick="deleteAppointment('${escapeHtml(a.id)}')" class="border-2 border-sanctuaryBorder text-charcoalInk px-3 py-2 rounded-lg font-bold">Delete</button></div></div>`).join('');
+        }
+
+        function renderUserHistoryView() {
+            const container = document.getElementById('history-container');
+            const items = getAppointments();
+            if (!items.length) {
+                container.innerHTML = `
+                    <div class="p-8 rounded-3xl border-2 border-dashed border-sanctuaryBorder text-center space-y-3">
+                        <p class="text-3xl">📭</p>
+                        <p class="font-extrabold text-base text-charcoalInk">No Bookings in Your History Yet</p>
+                        <p class="text-xs text-charcoalMuted">When you book a hospital appointment or volunteer visit, your timestamped slips and printable receipts will appear here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = items.map(a => `
+                <div class="p-5 rounded-3xl border-2 border-sanctuaryBorder bg-sanctuaryBg/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-sky-100 text-sky-900 border border-sky-300">${escapeHtml(a.type || 'APPOINTMENT')}</span>
+                            <span class="text-xs font-extrabold text-sky-800">Receipt #${escapeHtml(a.id)}</span>
+                            <span class="text-xs text-charcoalMuted">• Booked on ${escapeHtml(a.createdAt)}</span>
+                        </div>
+                        <p class="text-lg font-serif font-bold text-charcoalInk">${escapeHtml(a.hospital)}</p>
+                        <p class="text-xs sm:text-sm text-charcoalMuted font-semibold">
+                            Patient/Member: <b>${escapeHtml(a.name)}</b> (${escapeHtml(a.phone)}) • Scheduled: <b>${escapeHtml(a.date)} (${escapeHtml(a.time)})</b>
+                        </p>
+                        ${a.department ? `<p class="text-xs text-charcoalMuted">Dept / Service: ${escapeHtml(a.department)}</p>` : ''}
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="printAppointment('${escapeHtml(a.id)}')" class="px-4 py-2.5 rounded-xl bg-[#0369A1] hover:bg-[#075985] text-white font-extrabold text-xs shadow cursor-pointer">
+                            🧾 Print Receipt
+                        </button>
+                        <button onclick="deleteAppointment('${escapeHtml(a.id)}'); renderUserHistoryView();" class="px-3.5 py-2.5 rounded-xl border-2 border-red-200 text-red-700 hover:bg-red-50 font-extrabold text-xs cursor-pointer">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function appointmentPrintHtml(a) {
+            return `<article class="slip"><h1>ElderEase — Official Booking & Request Receipt</h1><p><b>Receipt / Slip No:</b> ${escapeHtml(a.id)}</p><p><b>Service / Hospital:</b> ${escapeHtml(a.hospital || a.title)}</p><p><b>Beneficiary Name:</b> ${escapeHtml(a.name || a.patientName)}</p><p><b>Age:</b> ${escapeHtml(a.age || 'Not provided')}</p><p><b>Mobile:</b> ${escapeHtml(a.phone)}</p><p><b>Department / Purpose:</b> ${escapeHtml(a.department || 'General Consultation')}</p><p><b>Requested Date:</b> ${escapeHtml(a.date)}</p><p><b>Preferred Slot:</b> ${escapeHtml(a.time)}</p><p><b>Notes / Reason:</b> ${escapeHtml(a.reason || 'Standard request')}</p><p><b>Booking Timestamp:</b> ${escapeHtml(a.createdAt)}</p><hr><p><b>Important:</b> Generated via ElderEase Senior Citizen Digital Sanctuary (Chhatrapati Sambhajinagar).</p></article>`;
+        }
+
+        function printSlips(items) {
+            if (!items.length) { showToast('No appointment slips to print.'); return; }
+            const w = window.open('', '_blank');
+            if (!w) { showToast('Allow pop-ups to print the receipt.'); return; }
+            w.document.write('<!doctype html><html><head><title>ElderEase Official Receipt</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:16px Arial,sans-serif;color:#222;margin:24px}.slip{max-width:700px;margin:0 auto 28px;padding:24px;border:3px solid #0369A1;border-radius:14px;page-break-after:always}.slip h1{font-size:22px;color:#0C4A6E;margin-top:0}.slip p{margin:10px 0;line-height:1.45}hr{margin:18px 0}@media print{body{margin:8mm}.slip{break-after:page}}</style></head><body>' + items.map(appointmentPrintHtml).join('') + '</body></html>');
+            w.document.close(); w.focus(); setTimeout(() => w.print(), 350);
+        }
+
+        function printAppointment(id) { printSlips(getAppointments().filter(a => a.id === id)); }
+        function printLatestAppointment() { const id = latestAppointmentId; if (id) printAppointment(id); else showToast('Create an appointment slip first.'); }
+        function printAllAppointments() { printSlips(getAppointments()); }
+        async function deleteAppointment(id) {
+            saveAppointments(getAppointments().filter(a => a.id !== id));
+            renderAppointments();
+            try { await fetch('/api/bookings/' + encodeURIComponent(id), { method: 'DELETE' }); } catch (e) {}
+        }
+
+        function openSelectedHospitalBooking() {
+            const hospital = document.getElementById('appt-hospital').value;
+            const url = hospitalLinks[hospital] || ('https://www.google.com/search?q=' + encodeURIComponent(hospital + ' Chhatrapati Sambhajinagar appointment booking'));
+            window.open(url, '_blank', 'noopener');
+        }
+
+        function toggleDarkModeSetting() {
+            playChime();
+            document.body.classList.toggle('dark-sanctuary');
+            const isDark = document.body.classList.contains('dark-sanctuary');
+            localStorage.setItem('elderease_dark', isDark ? '1' : '0');
+            showToast(isDark ? "🌙 Dark Sanctuary Mode enabled" : "☀️ Sky-Blue Day Mode restored");
+        }
+
+        function updateVoiceRate(val) {
+            voiceSpeechRate = parseFloat(val) || 0.82;
+            speakText("Voice speed updated.");
+        }
+
+        function toggleSoundChimes() {
+            soundChimesEnabled = !soundChimesEnabled;
+            const btn = document.getElementById('setting-chime-btn');
+            if (soundChimesEnabled) {
+                btn.innerText = "Enabled ✓";
+                btn.className = "px-4 py-2.5 rounded-xl font-extrabold text-xs bg-emerald-700 text-white shadow cursor-pointer";
+                playChime();
+            } else {
+                btn.innerText = "Muted ✕";
+                btn.className = "px-4 py-2.5 rounded-xl font-extrabold text-xs bg-slate-600 text-white shadow cursor-pointer";
+            }
+        }
+
+        async function unlockDeveloperConsole() {
+            playChime();
+            const passInput = document.getElementById('dev-password-input').value.trim();
+            const errEl = document.getElementById('dev-lock-error');
+
+            try {
+                const res = await fetch('/api/dev/overview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: passInput })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    errEl.classList.remove('hidden');
+                    showToast("✕ Invalid Developer Password Key!");
+                    return;
+                }
+                errEl.classList.add('hidden');
+                devPassCache = passInput;
+                devUsersCache = data.users || [];
+                document.getElementById('dev-lock-screen').classList.add('hidden');
+                document.getElementById('dev-dashboard-screen').classList.remove('hidden');
+                renderDeveloperDashboard(data);
+                showToast("👑 Welcome to the Royal Developer Console!");
+            } catch (err) {
+                if (passInput === 'ELDER2026') {
+                    errEl.classList.add('hidden');
+                    devPassCache = passInput;
+                    const localBookings = getAppointments();
+                    const fallbackUsers = currentUser ? [{
+                        ...currentUser,
+                        bookingCount: localBookings.length,
+                        bookings: localBookings
+                    }] : [];
+                    devUsersCache = fallbackUsers;
+                    document.getElementById('dev-lock-screen').classList.add('hidden');
+                    document.getElementById('dev-dashboard-screen').classList.remove('hidden');
+                    renderDeveloperDashboard({
+                        totalUsers: fallbackUsers.length,
+                        totalBookings: localBookings.length,
+                        users: fallbackUsers
+                    });
+                } else {
+                    errEl.classList.remove('hidden');
+                }
+            }
+        }
+
+        async function refreshDeveloperData() {
+            if (!devPassCache) return;
+            try {
+                const res = await fetch('/api/dev/overview', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: devPassCache })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    devUsersCache = data.users || [];
+                    renderDeveloperDashboard(data);
+                    showToast("↻ Developer telemetry refreshed");
+                }
+            } catch (e) {}
+        }
+
+        function renderDeveloperDashboard(data) {
+            document.getElementById('dev-stat-users').innerText = data.totalUsers || 0;
+            document.getElementById('dev-stat-bookings').innerText = data.totalBookings || 0;
+
+            const listEl = document.getElementById('dev-users-list');
+            if (!devUsersCache.length) {
+                listEl.innerHTML = `<p class="text-xs text-slate-400">No users registered yet.</p>`;
+                return;
+            }
+
+            listEl.innerHTML = devUsersCache.map((u, idx) => `
+                <div class="p-4 rounded-2xl bg-slate-800/90 hover:bg-slate-800 border border-amber-400/25 space-y-3 transition">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <span class="w-7 h-7 rounded-lg bg-amber-400 text-slate-950 font-black text-xs flex items-center justify-center shrink-0">#${idx + 1}</span>
+                            <img src="${escapeHtml(u.picture)}" class="w-10 h-10 rounded-xl object-cover border border-amber-300/40 shrink-0" alt="">
+                            <div class="min-w-0">
+                                <p class="font-extrabold text-sm text-white truncate">${escapeHtml(u.name)}</p>
+                                <p class="text-[11px] text-sky-300 truncate">${escapeHtml(u.email)}</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-sky-500/20 text-sky-200 border border-sky-400/30 shrink-0">
+                            ${u.bookingCount || 0} Bookings
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <button onclick="inspectDevUserProfile(${idx})" class="py-2 px-3 rounded-xl bg-white/10 hover:bg-amber-400 hover:text-slate-950 text-amber-200 font-extrabold text-xs transition cursor-pointer">
+                            👤 View Profile
+                        </button>
+                        <button onclick="inspectDevUserHistory(${idx})" class="py-2 px-3 rounded-xl bg-sky-500/20 hover:bg-sky-400 hover:text-slate-950 text-sky-200 border border-sky-400/30 font-extrabold text-xs transition cursor-pointer">
+                            📜 Work & History
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function inspectDevUserProfile(index) {
+            playChime();
+            const u = devUsersCache[index];
+            if (!u) return;
+            const host = document.getElementById('dev-inspector-content');
+            host.innerHTML = `
+                <div class="space-y-5 animate-[royalReveal_0.25s_ease-out]">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                        <span class="text-xs font-extrabold uppercase tracking-widest text-amber-300">👑 Royal Member Identity Card (Rank #${index + 1})</span>
+                        <button onclick="inspectDevUserHistory(${index})" class="text-xs font-extrabold bg-sky-500 text-slate-950 px-3.5 py-1.5 rounded-xl cursor-pointer">
+                            Switch to History (${u.bookingCount || 0}) ➔
+                        </button>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-center gap-5 p-5 rounded-3xl bg-slate-950/70 border border-amber-400/30">
+                        <img src="${escapeHtml(u.picture)}" class="w-20 h-20 rounded-3xl border-2 border-amber-400 shadow-lg" alt="">
+                        <div class="space-y-1 text-center sm:text-left">
+                            <h4 class="text-2xl font-serif font-bold text-white">${escapeHtml(u.name)}</h4>
+                            <p class="text-sm text-sky-300 font-semibold">${escapeHtml(u.email)}</p>
+                            <p class="text-xs text-slate-400">User ID: ${escapeHtml(u.id)}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs sm:text-sm">
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <p class="text-slate-400 font-bold">Mobile Number</p>
+                            <p class="text-white font-extrabold text-base mt-0.5">${escapeHtml(u.phone || 'Not provided')}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <p class="text-slate-400 font-bold">Senior Citizen Age</p>
+                            <p class="text-white font-extrabold text-base mt-0.5">${escapeHtml(u.age ? u.age + ' Years' : 'Not provided')}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10 sm:col-span-2">
+                            <p class="text-slate-400 font-bold">Registered Address / Location</p>
+                            <p class="text-white font-extrabold mt-0.5">${escapeHtml(u.address || 'Chhatrapati Sambhajinagar')}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <p class="text-slate-400 font-bold">Last Active Timestamp</p>
+                            <p class="text-emerald-300 font-extrabold mt-0.5">${new Date(u.lastActive || u.createdAt).toLocaleString()}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <p class="text-slate-400 font-bold">Total Completed Bookings</p>
+                            <p class="text-amber-300 font-extrabold text-base mt-0.5">${u.bookingCount || 0} Bookings</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function inspectDevUserHistory(index) {
+            playChime();
+            const u = devUsersCache[index];
+            if (!u) return;
+            const host = document.getElementById('dev-inspector-content');
+            const bookings = u.bookings || [];
+
+            host.innerHTML = `
+                <div class="space-y-4 animate-[royalReveal_0.25s_ease-out]">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-4">
+                        <div>
+                            <span class="text-xs font-extrabold uppercase tracking-widest text-sky-300">📜 Complete Work & Booking History</span>
+                            <h4 class="text-xl font-serif font-bold text-white mt-0.5">${escapeHtml(u.name)} (${bookings.length} Records)</h4>
+                        </div>
+                        <button onclick="inspectDevUserProfile(${index})" class="text-xs font-extrabold bg-amber-400 text-slate-950 px-3.5 py-1.5 rounded-xl cursor-pointer">
+                            👤 View Profile Card
+                        </button>
+                    </div>
+
+                    ${bookings.length === 0 ? `
+                        <div class="p-8 rounded-2xl bg-white/5 text-center text-slate-400 text-sm">
+                            No bookings recorded for ${escapeHtml(u.name)} yet.
+                        </div>
+                    ` : bookings.map(b => `
+                        <div class="p-4 rounded-2xl bg-slate-950/80 border border-sky-400/30 space-y-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-400/20 text-amber-300 border border-amber-400/40">
+                                    ${escapeHtml(b.type || 'APPOINTMENT')} • #${escapeHtml(b.id)}
+                                </span>
+                                <span class="text-xs text-emerald-300 font-bold">🕒 ${escapeHtml(b.createdAt)}</span>
+                            </div>
+                            <p class="font-serif font-bold text-base text-white">${escapeHtml(b.title || b.hospital)}</p>
+                            <p class="text-xs text-slate-300">
+                                Patient: <b>${escapeHtml(b.patientName || b.name)}</b> • Phone: <b>${escapeHtml(b.phone)}</b> • Slot: <b>${escapeHtml(b.date)} (${escapeHtml(b.time)})</b>
+                            </p>
+                            <p class="text-xs text-slate-400">Dept / Details: ${escapeHtml(b.department || 'General')} — ${escapeHtml(b.reason || 'Standard request')}</p>
+                            <div class="pt-2">
+                                <button onclick='printSlips([${JSON.stringify(b).replace(/'/g, "&#39;")}])' class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-extrabold text-xs shadow cursor-pointer">
+                                    🧾 Get Official Receipt / Print Slip
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const dateInput = document.getElementById('appt-date');
+            if (dateInput) {
+                const d = new Date();
+                dateInput.min = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+                dateInput.value = dateInput.min;
+            }
+
+            if (localStorage.getItem('elderease_dark') === '1') {
+                document.body.classList.add('dark-sanctuary');
+            }
+
+            try {
+                const savedUser = JSON.parse(localStorage.getItem('elderease_user') || 'null');
+                if (savedUser && savedUser.email) {
+                    currentUser = savedUser;
+                }
+            } catch (e) {}
+
+            syncUserUIAndAutoFill();
+            renderAppointments();
+            if (currentUser) {
+                syncUserBookingsFromServer();
+            }
+        });
+    </script>
+</body>
+</html>
